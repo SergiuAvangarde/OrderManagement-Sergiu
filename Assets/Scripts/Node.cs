@@ -1,14 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Node : MonoBehaviour
+[Serializable]
+public class Node
 {
-
-    public Node Parent;
     public Node Left;
     public Node Right;
     public InventoryItem ItemObject;
     public string ItemName;
 
+    public Node(string name, InventoryItem item)
+    {
+        ItemName = name;
+        ItemObject = item;
+        Left = null;
+        Right = null;
+        Debug.Log("node created " + ItemName);
+    }
 }

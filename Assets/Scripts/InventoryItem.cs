@@ -12,3 +12,9 @@ public class InventoryItem
     public int Quantity;
     public bool OnSale;
 }
+
+[Serializable]
+public class InventoryList
+{
+    public List<InventoryItem> ItemsList = new List<InventoryItem>();
+}
