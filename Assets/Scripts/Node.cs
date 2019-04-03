@@ -8,15 +8,26 @@ public class Node
 {
     public Node Left;
     public Node Right;
-    public InventoryItem ItemObject;
+    //public InventoryItem ItemObject;
     public string ItemName;
+    public float Price;
+    public int Stock;
+    public bool OnSale;
 
-    public Node(string name, InventoryItem item)
+    //public Node(InventoryItem item)
+    //{
+    //    //ItemName = name;
+    //    ItemObject = item;
+    //    Left = null;
+    //    Right = null;
+    //    Debug.Log("node created " + ItemObject.ItemName);
+    //}
+
+    public Node(string name, float price, int stock)
     {
         ItemName = name;
-        ItemObject = item;
-        Left = null;
-        Right = null;
-        Debug.Log("node created " + ItemName);
+        Price = price;
+        Stock = stock;
+        OnSale = false;
     }
 }

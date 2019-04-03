@@ -6,68 +6,6 @@ public class BinaryTree : MonoBehaviour
 {
     public static Node RootTree = null;
 
-    public static void AddItems(string name, float price, int quantity)
-    {
-        InventoryItem Object = new InventoryItem();
-        Object.ItemName = name;
-        Object.Price = price;
-        Object.Quantity = quantity;
-        Object.OnSale = false;
-
-        Node ItemNode = new Node(name, Object);
-        RootTree = AddToTree(RootTree, ItemNode);
-    }
-
-    public static Node SearchTree(Node parentNode, string searchName)
-    {
-        if (parentNode != null)
-        {
-            if (parentNode.ItemName == searchName)
-            {
-                return parentNode;
-            }
-            else
-            {
-                int value = searchName.CompareTo(parentNode.ItemName);
-                if (value > 0)
-                {
-                    if (parentNode.Right != null)
-                    {
-                        return SearchTree(parentNode.Right, searchName);
-                    }
-                    else
-                    {
-                        //Node ItemNode = new Node();
-                        //ItemNode.ItemName = searchName;
-                        //AddToTree(parentNode.Right, ItemNode);
-                        return SearchTree(parentNode.Right, searchName);
-                    }
-                }
-                else
-                {
-                    if (parentNode.Left != null)
-                    {
-                        return SearchTree(parentNode.Left, searchName);
-                    }
-                    else
-                    {
-                        //Node ItemNode = new Node();
-                        //ItemNode.ItemName = searchName;
-                        //AddToTree(parentNode.Left, ItemNode);
-                        return SearchTree(parentNode.Left, searchName);
-                    }
-                }
-            }
-        }
-        else
-        {
-            //Node ItemNode = new Node();
-            //ItemNode.ItemName = searchName;
-            //AddToTree(parentNode, ItemNode);
-            return SearchTree(parentNode, searchName);
-        }
-    }
-
     public static Node AddToTree(Node parentNode, Node newNode)
     {
         if (parentNode == null)
@@ -76,7 +14,7 @@ public class BinaryTree : MonoBehaviour
         }
         else
         {
-            int value = newNode.ItemName.CompareTo(parentNode.ItemName);
+            int value = newNode.ItemName.ToLower().CompareTo(parentNode.ItemName.ToLower());
             if (value > 0)
             {
                 parentNode.Right = AddToTree(parentNode.Right, newNode);
@@ -88,7 +26,7 @@ public class BinaryTree : MonoBehaviour
             else
             {
                 print("Item already in tree");
-                parentNode.ItemObject.Quantity += newNode.ItemObject.Quantity;
+                parentNode.Stock += newNode.Stock;
             }
         }
         return parentNode;
@@ -110,7 +48,7 @@ public class BinaryTree : MonoBehaviour
                 }
                 else if (parentNode.Right != null && parentNode.Left != null)
                 {
-                    return LowerValue(parentNode.Right);
+                    return LowestValue(parentNode.Right);
                 }
                 else
                 {
@@ -119,7 +57,7 @@ public class BinaryTree : MonoBehaviour
             }
             else
             {
-                int value = toRemove.CompareTo(parentNode.ItemName);
+                int value = toRemove.ToLower().CompareTo(parentNode.ItemName.ToLower());
                 if (value > 0)
                 {
                     if (parentNode.Right != null)
@@ -153,7 +91,37 @@ public class BinaryTree : MonoBehaviour
         }
     }
 
-    public static Node LowerValue(Node subTree)
+    public static Node SearchTree(Node parentNode, string searchName)
+    {
+        if (parentNode != null)
+        {
+            if (parentNode.ItemName.ToLower() == searchName.ToLower())
+            {
+                return parentNode;
+            }
+            else
+            {
+                int value = searchName.ToLower().CompareTo(parentNode.ItemName.ToLower());
+                if (value > 0)
+                {
+                    if (parentNode.Right != null)
+                    {
+                        return SearchTree(parentNode.Right, searchName);
+                    }
+                }
+                else
+                {
+                    if (parentNode.Left != null)
+                    {
+                        return SearchTree(parentNode.Left, searchName);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Node LowestValue(Node subTree)
     {
         if (subTree.Left == null)
         {
@@ -161,7 +129,7 @@ public class BinaryTree : MonoBehaviour
         }
         else
         {
-            return LowerValue(subTree.Left);
+            return LowestValue(subTree.Left);
         }
     }
 }

@@ -1,64 +1,74 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject AddNewItem;
-    [SerializeField]
-    private InputField ItemName;
-    [SerializeField]
-    private InputField ItemPrice;
-    [SerializeField]
-    private InputField ItemQuantity;
+    public List<Clients> ClientsList = new List<Clients>();
+    public GameObject AddNewItem;
 
+    [SerializeField]
+    private GameObject item;
+    [SerializeField]
+    private Transform itemsParent;
 
-    private InventoryList listOfItems = new InventoryList();
-    private int index;
+    [SerializeField]
+    private InputField itemName;
+    [SerializeField]
+    private InputField itemPrice;
+    [SerializeField]
+    private InputField itemStock;
+
+    public void AddClients()
+    {
+
+    }
 
     public void OnAddPress()
     {
-        BinaryTree.AddItems(ItemName.text, float.Parse(ItemPrice.text), int.Parse(ItemQuantity.text));
+        AddItems(itemName.text, float.Parse(itemPrice.text), int.Parse(itemStock.text));
     }
 
     public void OnRemovePress()
     {
-        BinaryTree.RootTree = BinaryTree.RemoveFromTree(BinaryTree.RootTree, ItemName.text);
+        BinaryTree.RootTree = BinaryTree.RemoveFromTree(BinaryTree.RootTree, itemName.text);
     }
 
     public void OnPrintPress()
     {
-        index = 1;
         PrintTree(BinaryTree.RootTree);
+    }
+
+    public static void AddItems(string name, float price, int stock)
+    {
+        //InventoryItem Object = new InventoryItem(name, price, stock);
+        //Object.OnSale = false;
+        Node ItemNode = new Node(name, price, stock);
+        BinaryTree.RootTree = BinaryTree.AddToTree(BinaryTree.RootTree, ItemNode);
     }
 
     private void PrintTree(Node node)
     {
         if (node != null)
         {
-            print("node " + index + " item " + node.ItemName);
-            print("node " + index + " price: " + node.ItemObject.Price);
-            print("node " + index + " quantity: " + node.ItemObject.Quantity);
-            listOfItems.ItemsList.Add(node.ItemObject);
-            index++;
-        }
-
-        if (node.Right != null)
-        {
-            PrintTree(node.Right);
+            GameObject listItem = Instantiate(item, itemsParent);
+            listItem.GetComponent<Toggle>().group = itemsParent.GetComponent<ToggleGroup>();
+            InventoryItem itemComponent = listItem.GetComponent<InventoryItem>();
+            itemComponent.ItemName = node.ItemName;
+            itemComponent.Price = node.Price;
+            itemComponent.Stock = node.Stock;
         }
 
         if (node.Left != null)
         {
             PrintTree(node.Left);
         }
-    }
 
-    public void SerializeTree()
-    {
-        //listOfItems.ItemsList.Sort();
-        FileManager.WriteFile(listOfItems);
+        if (node.Right != null)
+        {
+            PrintTree(node.Right);
+        }
     }
 }
