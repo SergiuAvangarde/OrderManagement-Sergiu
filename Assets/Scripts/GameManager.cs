@@ -15,15 +15,28 @@ public class GameManager : MonoBehaviour
     private Transform itemsParent;
 
     [SerializeField]
+    private InputField clientName;
+
+    [SerializeField]
     private InputField itemName;
     [SerializeField]
     private InputField itemPrice;
     [SerializeField]
     private InputField itemStock;
 
+    private string[] nodesData;
+    private int index = 0;
+
+    private void Awake()
+    {
+        FileManager.SaveNodesFromFile();
+        ShowOnUI(BinaryTree.RootTree);
+    }
+
     public void AddClients()
     {
-
+        Clients client = new Clients(clientName.text);
+        ClientsList.Add(client);
     }
 
     public void OnAddPress()
@@ -38,7 +51,8 @@ public class GameManager : MonoBehaviour
 
     public void OnPrintPress()
     {
-        PrintTree(BinaryTree.RootTree);
+        SaveNodes(BinaryTree.RootTree);
+        ShowOnUI(BinaryTree.RootTree);
     }
 
     public static void AddItems(string name, float price, int stock)
@@ -49,7 +63,7 @@ public class GameManager : MonoBehaviour
         BinaryTree.RootTree = BinaryTree.AddToTree(BinaryTree.RootTree, ItemNode);
     }
 
-    private void PrintTree(Node node)
+    private void ShowOnUI(Node node)
     {
         if (node != null)
         {
@@ -63,12 +77,30 @@ public class GameManager : MonoBehaviour
 
         if (node.Left != null)
         {
-            PrintTree(node.Left);
+            ShowOnUI(node.Left);
         }
 
         if (node.Right != null)
         {
-            PrintTree(node.Right);
+            ShowOnUI(node.Right);
+        }
+    }
+
+    private void SaveNodes(Node node)
+    {
+        if (node != null)
+        {
+            FileManager.WriteNodeToFile(node.ItemName, node.Price, node.Stock);
+        }
+
+        if (node.Left != null)
+        {
+            SaveNodes(node.Left);
+        }
+
+        if (node.Right != null)
+        {
+            SaveNodes(node.Right);
         }
     }
 }
