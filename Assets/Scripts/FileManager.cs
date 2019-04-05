@@ -7,18 +7,39 @@ using UnityEngine;
 
 public class FileManager : MonoBehaviour
 {
-    private static readonly string filename = "BinaryTreeData.csv";
+    private static readonly string binerytreefile = "BinaryTreeData.csv";
+    private static readonly string clientsfile = "ClientsData.json";
 
-    public static void WriteNodeToFile(string name, float price, int stock)
+    //public static void SaveNodeToFile(string name, float price, int stock)
+    //{
+    //    string filePath = Path.Combine(Application.persistentDataPath, binerytreefile);
+    //    string row = name + ',' + price.ToString() + ',' + stock.ToString() + Environment.NewLine;
+    //    File.AppendAllText(filePath, row);
+    //}
+
+    public static void SaveNodesToFile(Node node)
     {
-        string filePath = Path.Combine(Application.persistentDataPath, filename);
-        string row = name + ',' + price.ToString() + ',' + stock.ToString() + Environment.NewLine;
-        File.AppendAllText(filePath, row);
+        if (node != null)
+        {
+            string filePath = Path.Combine(Application.persistentDataPath, binerytreefile);
+            string row = node.ItemName + ',' + node.Price.ToString() + ',' + node.Stock.ToString() + Environment.NewLine;
+            File.AppendAllText(filePath, row);
+        }
+
+        if (node.Left != null)
+        {
+            SaveNodesToFile(node.Left);
+        }
+
+        if (node.Right != null)
+        {
+            SaveNodesToFile(node.Right);
+        }
     }
 
-    public static void SaveNodesFromFile()
+    public static void LoadNodesFromFile()
     {
-        string filePath = Path.Combine(Application.persistentDataPath, filename);
+        string filePath = Path.Combine(Application.persistentDataPath, binerytreefile);
         if (File.Exists(filePath))
         {
             string[] Nodes = File.ReadAllLines(filePath);
@@ -40,7 +61,6 @@ public class FileManager : MonoBehaviour
                     continue;
                 }
             }
-
         }
         else
         {
@@ -48,33 +68,18 @@ public class FileManager : MonoBehaviour
         }
     }
 
-    public static void SearchInFile(string name)
+    public static void DeleteTreeFile()
     {
-        string filePath = Path.Combine(Application.persistentDataPath, filename);
+        string filePath = Path.Combine(Application.persistentDataPath, binerytreefile);
         if (File.Exists(filePath))
         {
-            string[] Nodes = File.ReadAllLines(filePath);
-
-            foreach (var nodeData in Nodes)
-            {
-                string[] node = nodeData.Split(',');
-                string nodeName = node[0];
-
-                if (BinaryTree.SearchTree(BinaryTree.RootTree, nodeName) != null)
-                {
-                    //edit node from file
-                    print("node is in file");
-                }
-                else
-                {
-                    //add node to file
-                    print("node not found in file");
-                }
-            }
+            File.Delete(filePath);
         }
-        else
-        {
-            print("the .csv file does not exist");
-        }
+    }
+
+    public static void SaveClients(ClientList cList)
+    {
+        string contents = JsonUtility.ToJson(cList, true);
+        File.WriteAllText(clientsfile, contents);
     }
 }
