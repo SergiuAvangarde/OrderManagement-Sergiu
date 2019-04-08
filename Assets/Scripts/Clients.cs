@@ -20,9 +20,3 @@ public class Clients
         OrdersHistory.Add(order);
     }
 }
-
-//[Serializable]
-//public class ClientList
-//{
-//    public List<Clients> ClientsList = new List<Clients>();
-//}

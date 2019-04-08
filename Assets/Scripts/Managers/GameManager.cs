@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
     public UIManager UIManagerComponent;
     public ItemsManager ItemsManagerComponent;
 
-    //public ClientList ClientsList = new ClientList();
     public List<Clients> ClientsList = new List<Clients>();
     public List<CartItem> ShopingCartList = new List<CartItem>();
     public Queue<CartItem> ShopingCartPool = new Queue<CartItem>();

@@ -76,11 +76,8 @@ public class FileManager : MonoBehaviour
 
         foreach (var client in cList)
         {
-            //string row = client.ClientName + ",";
             File.AppendAllText(filePath, client.ClientName);
         }
-        //string contents = JsonUtility.ToJson(cList, true);
-        //File.WriteAllText(filePath, contents);
     }
 
     public static List<Clients> LoadClients()
@@ -98,12 +95,6 @@ public class FileManager : MonoBehaviour
                 cList.Add(loadedClient);
             }
         }
-        //ClientList cList = new ClientList();
-        //if (File.Exists(filePath))
-        //{
-        //    string json = File.ReadAllText(filePath);
-        //    cList = JsonUtility.FromJson<ClientList>(json);
-        //}
         return cList;
     }
 }
