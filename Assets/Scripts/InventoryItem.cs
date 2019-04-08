@@ -5,12 +5,7 @@ using UnityEngine.UI;
 
 public class InventoryItem : MonoBehaviour
 {
-    public string ItemName { get; set; }
-    public float Price { get; set; }
-    public int Stock { get; set; }
-    public float SalePrice { get; set; }
-
-    public bool AddedToCart = false;
+    public Node NodeItem { get; set; }
 
     [SerializeField]
     private Text NameField;
@@ -19,46 +14,57 @@ public class InventoryItem : MonoBehaviour
     [SerializeField]
     private Text PriceField;
 
-    private void Start()
+    private void OnEnable()
     {
-        NameField.text = ItemName;
-        StockField.text = "Stock: " + Stock.ToString();
-        PriceField.text = "Price: " + Price.ToString() + "$";
+        NameField.text = NodeItem.ItemName;
+        StockField.text = "Stock: " + NodeItem.Stock.ToString();
+        PriceField.text = "Price: " + NodeItem.Price.ToString() + "$";
     }
 
     public void AddToCart()
     {
-        bool copied = false;
-        foreach (CartItem item in GameManager.Instance.ShopingCartList)
+        foreach (var item in GameManager.Instance.ShopingCartList)
         {
-            if (item.AddedToCart && item.ItemName.ToLower().Trim() == ItemName.ToLower().Trim())
+            if (item.NodeItem.ItemName.ToLower().Trim() == NodeItem.ItemName.ToLower().Trim())
             {
-                item.Quantity += 1;
-                copied = true;
-                break;
-            }
-            else if (!item.AddedToCart)
-            {
-                item.gameObject.SetActive(true);
-                item.AddedToCart = true;
-                item.ItemName = ItemName;
-                item.Price = Price;
-                item.Quantity++;
-                item.SalePrice = SalePrice;
-                copied = true;
-                break;
+                if (item.NodeItem.Stock > item.Quantity)
+                {
+                    item.Quantity++;
+                    GameManager.Instance.TotalPrice += item.NodeItem.Price;
+                    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+                }
+                else
+                {
+                    GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_STOCK_EXCEDED);
+                }
+                return;
             }
         }
+        try
+        {
 
-        if (copied == false)
+            CartItem item = GameManager.Instance.ShopingCartPool.Dequeue();
+            item.AddedToCart = true;
+            item.NodeItem = NodeItem;
+            item.Quantity++;
+            item.gameObject.SetActive(true);
+            GameManager.Instance.ShopingCartList.Add(item);
+            GameManager.Instance.TotalPrice += item.NodeItem.Price;
+            GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+        }
+        catch
         {
             GameObject listItem = Instantiate(GameManager.Instance.CartItem, GameManager.Instance.ShoppingCartContents);
             CartItem itemValues = listItem.GetComponent<CartItem>();
-            GameManager.Instance.ShopingCartList.Add(itemValues);
-            itemValues.ItemName = ItemName;
-            itemValues.Price = Price;
-            itemValues.Quantity++;
-            itemValues.SalePrice = SalePrice;
+            GameManager.Instance.ShopingCartPool.Enqueue(itemValues);
+            CartItem item = GameManager.Instance.ShopingCartPool.Dequeue();
+            item.AddedToCart = true;
+            item.NodeItem = NodeItem;
+            item.Quantity++;
+            item.gameObject.SetActive(true);
+            GameManager.Instance.ShopingCartList.Add(item);
+            GameManager.Instance.TotalPrice += itemValues.NodeItem.Price;
+            GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
         }
     }
 }

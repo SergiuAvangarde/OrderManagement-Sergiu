@@ -8,14 +8,7 @@ using UnityEngine;
 public class FileManager : MonoBehaviour
 {
     private static readonly string binerytreefile = "BinaryTreeData.csv";
-    private static readonly string clientsfile = "ClientsData.json";
-
-    //public static void SaveNodeToFile(string name, float price, int stock)
-    //{
-    //    string filePath = Path.Combine(Application.persistentDataPath, binerytreefile);
-    //    string row = name + ',' + price.ToString() + ',' + stock.ToString() + Environment.NewLine;
-    //    File.AppendAllText(filePath, row);
-    //}
+    private static readonly string clientsfile = "ClientsData.csv";
 
     public static void SaveNodesToFile(Node node)
     {
@@ -64,7 +57,7 @@ public class FileManager : MonoBehaviour
         }
         else
         {
-            print("the .csv file does not exist");
+            GameManager.Instance.UIManagerComponent.PrintErrorMessage("the .csv file does not exist");
         }
     }
 
@@ -77,9 +70,40 @@ public class FileManager : MonoBehaviour
         }
     }
 
-    public static void SaveClients(ClientList cList)
+    public static void SaveClients(List<Clients> cList)
     {
-        string contents = JsonUtility.ToJson(cList, true);
-        File.WriteAllText(clientsfile, contents);
+        string filePath = Path.Combine(Application.persistentDataPath, clientsfile);
+
+        foreach (var client in cList)
+        {
+            //string row = client.ClientName + ",";
+            File.AppendAllText(filePath, client.ClientName);
+        }
+        //string contents = JsonUtility.ToJson(cList, true);
+        //File.WriteAllText(filePath, contents);
+    }
+
+    public static List<Clients> LoadClients()
+    {
+        string filePath = Path.Combine(Application.persistentDataPath, clientsfile);
+        List<Clients> cList = new List<Clients>();
+
+        if (File.Exists(filePath))
+        {
+            string[] Clients = File.ReadAllLines(filePath);
+
+            foreach (var client in Clients)
+            {
+                Clients loadedClient = new Clients(client);
+                cList.Add(loadedClient);
+            }
+        }
+        //ClientList cList = new ClientList();
+        //if (File.Exists(filePath))
+        //{
+        //    string json = File.ReadAllText(filePath);
+        //    cList = JsonUtility.FromJson<ClientList>(json);
+        //}
+        return cList;
     }
 }

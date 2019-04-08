@@ -25,7 +25,7 @@ public class BinaryTree : MonoBehaviour
             }
             else
             {
-                print("Item already in tree");
+                GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_ITEM_EXISTS);
                 parentNode.Stock += newNode.Stock;
             }
         }
@@ -66,7 +66,7 @@ public class BinaryTree : MonoBehaviour
                     }
                     else
                     {
-                        print("the node does not exist");
+                        GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
                         return parentNode;
                     }
                 }
@@ -78,7 +78,7 @@ public class BinaryTree : MonoBehaviour
                     }
                     else
                     {
-                        print("the node does not exist");
+                        GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
                         return parentNode;
                     }
                 }
@@ -86,7 +86,7 @@ public class BinaryTree : MonoBehaviour
         }
         else
         {
-            print("the node does not exist");
+            GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
             return null;
         }
     }

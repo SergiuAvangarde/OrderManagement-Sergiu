@@ -17,13 +17,12 @@ public class Clients
 
     public void AddNewOrder(Orders order)
     {
-        order.Client = this;
         OrdersHistory.Add(order);
     }
 }
 
-[Serializable]
-public class ClientList
-{
-    public List<Clients> ClientsList = new List<Clients>();
-}
+//[Serializable]
+//public class ClientList
+//{
+//    public List<Clients> ClientsList = new List<Clients>();
+//}

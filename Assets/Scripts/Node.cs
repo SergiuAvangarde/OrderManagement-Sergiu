@@ -12,7 +12,6 @@ public class Node
     public string ItemName;
     public float Price;
     public int Stock;
-    public bool OnSale;
 
     //public Node(InventoryItem item)
     //{
@@ -28,6 +27,5 @@ public class Node
         ItemName = name;
         Price = price;
         Stock = stock;
-        OnSale = false;
     }
 }

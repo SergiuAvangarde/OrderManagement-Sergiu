@@ -4,14 +4,10 @@ using UnityEngine;
 
 public class Orders : MonoBehaviour
 {
-    public Clients Client;
-    public List<InventoryItem> OrderedItems = new List<InventoryItem>();
-    public float TotalPrice;
-    
+    public List<CartItem> OrderedItems = new List<CartItem>();
 
-    public Orders(Clients client, List<InventoryItem> itemsList)
+    public Orders(List<CartItem> itemsList)
     {
-        Client = client;
         itemsList = OrderedItems;
     }
 }

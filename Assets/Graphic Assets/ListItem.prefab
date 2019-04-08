@@ -177,7 +177,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &179200755644797711
 RectTransform:
   m_ObjectHideFlags: 0
@@ -308,7 +308,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9599cb7e2d6d5984ba941d0c6c239984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AddedToCart: 0
   NameField: {fileID: 179200754591294656}
   StockField: {fileID: 179200756058425813}
   PriceField: {fileID: 179200754634147962}

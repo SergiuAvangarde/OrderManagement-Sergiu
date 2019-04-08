@@ -5,10 +5,8 @@ using UnityEngine.UI;
 
 public class CartItem : MonoBehaviour
 {
-    public string ItemName { get; set; }
-    public float Price { get; set; }
+    public Node NodeItem { get; set; }
     public int Quantity { get; set; } = 0;
-    public float SalePrice { get; set; }
 
     public bool AddedToCart = false;
 
@@ -23,9 +21,9 @@ public class CartItem : MonoBehaviour
     {
         if (AddedToCart)
         {
-            NameField.text = ItemName;
+            NameField.text = NodeItem.ItemName;
             QuantityField.text = "Quantity: " + Quantity.ToString();
-            PriceField.text = "Price: " + Price.ToString() + "$";
+            PriceField.text = "Price: " + NodeItem.Price.ToString() + "$";
         }
     }
 
@@ -33,14 +31,25 @@ public class CartItem : MonoBehaviour
     {
         if (adjustment)
         {
-            Quantity++;
-            QuantityField.text = "Quantity: " + Quantity.ToString();
+            if (NodeItem.Stock > Quantity)
+            {
+                Quantity++;
+                QuantityField.text = "Quantity: " + Quantity.ToString();
+                GameManager.Instance.TotalPrice += NodeItem.Price;
+                GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+            }
+            else
+            {
+                GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_STOCK_EXCEDED);
+            }
         }
         else
         {
             Quantity--;
             QuantityField.text = "Quantity: " + Quantity.ToString();
-            if(Quantity == 0)
+            GameManager.Instance.TotalPrice -= NodeItem.Price;
+            GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+            if (Quantity == 0)
             {
                 gameObject.SetActive(false);
                 AddedToCart = false;
