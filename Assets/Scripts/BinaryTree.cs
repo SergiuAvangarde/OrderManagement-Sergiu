@@ -32,54 +32,148 @@ public class BinaryTree : MonoBehaviour
         return parentNode;
     }
 
-    public static Node RemoveFromTree(Node parentNode, string toRemove)
+    public static void RemoveFromTree(string nameToRemove)
     {
-        if (parentNode != null)
+        Node parentNode = RootTree;
+        Node currentNode = RootTree;
+        Node foundNode = null;
+
+        while (currentNode != null)
         {
-            if (parentNode.ItemName == toRemove)
+            int value = nameToRemove.ToLower().CompareTo(currentNode.ItemName.ToLower());
+            if (value == 0)
             {
-                if (parentNode.Right != null && parentNode.Left == null)
-                {
-                    return parentNode.Right;
-                }
-                else if (parentNode.Right == null && parentNode.Left != null)
-                {
-                    return parentNode.Left;
-                }
-                else if (parentNode.Right != null && parentNode.Left != null)
-                {
-                    return LowestValue(parentNode.Right);
-                }
-                else
-                {
-                    return null;
-                }
+                foundNode = currentNode;
+                break;
+            }
+            else if (value < 0)
+            {
+                parentNode = currentNode;
+                currentNode = currentNode.Left;
+            }
+            else if (value > 0)
+            {
+                parentNode = currentNode;
+                currentNode = currentNode.Right;
+            }
+        }
+
+        if (foundNode == null)
+        {
+            GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
+        }
+        else
+        {
+            if (foundNode.Right != null && foundNode.Left == null)
+            {
+                foundNode = foundNode.Right;
+                foundNode.Right = null;
+            }
+            else if (foundNode.Right == null && foundNode.Left != null)
+            {
+                foundNode = foundNode.Left;
+                foundNode.Left = null;
+            }
+            else if (foundNode.Right != null && foundNode.Left != null)
+            {
+                foundNode = LowestValue(foundNode.Right);
             }
             else
             {
-                int value = toRemove.ToLower().CompareTo(parentNode.ItemName.ToLower());
+                foundNode = null;
+            }
+        }
+
+        //if (parentNode != null)
+        //{
+        //    if (parentNode.ItemName == nameToRemove)
+        //    {
+        //         if (parentNode.Right != null && parentNode.Left == null)
+        //         {
+        //             parentNode = parentNode.Right;
+        //             parentNode.Right = null;
+        //         }
+        //         else if (parentNode.Right == null && parentNode.Left != null)
+        //         {
+        //             parentNode = parentNode.Left;
+        //             parentNode.Left = null;
+        //         }
+        //         else if (parentNode.Right != null && parentNode.Left != null)
+        //         {
+        //             parentNode = LowestValue(parentNode.Right);
+        //         }
+        //         else
+        //         {
+        //             parentNode = null;
+        //         }
+        //     }
+        //    else
+        //    {
+        //        int value = nameToRemove.ToLower().CompareTo(parentNode.ItemName.ToLower());
+        //        if (value > 0)
+        //        {
+        //            if (parentNode.Right != null)
+        //            {
+        //                RemoveFromTree(parentNode.Right, nameToRemove);
+        //            }
+        //            else
+        //            {
+        //                GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (parentNode.Left != null)
+        //            {
+        //                RemoveFromTree(parentNode.Left, nameToRemove);
+        //            }
+        //            else
+        //            {
+        //                GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
+        //            }
+        //        }
+        //    }
+        //}
+        //else
+        //{
+        //    GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
+        //}
+    }
+
+    public static void EditNode(Node parentNode, string searchName, string name, float price, int stock, float discount)
+    {
+        if (parentNode != null)
+        {
+            if (parentNode.ItemName.ToLower() == searchName.ToLower())
+            {
+                parentNode.ItemName = name;
+                parentNode.Price = price;
+                parentNode.Stock = stock;
+                parentNode.Discount = discount;
+            }
+            else
+            {
+                int value = searchName.ToLower().CompareTo(parentNode.ItemName.ToLower());
                 if (value > 0)
                 {
                     if (parentNode.Right != null)
                     {
-                        return RemoveFromTree(parentNode.Right, toRemove);
+                        EditNode(parentNode.Right, searchName, name, price, stock, discount);
                     }
                     else
                     {
                         GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
-                        return parentNode;
                     }
                 }
                 else
                 {
                     if (parentNode.Left != null)
                     {
-                        return RemoveFromTree(parentNode.Left, toRemove);
+                        EditNode(parentNode.Left, searchName, name, price, stock, discount);
                     }
                     else
                     {
                         GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
-                        return parentNode;
                     }
                 }
             }
@@ -87,7 +181,6 @@ public class BinaryTree : MonoBehaviour
         else
         {
             GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
-            return null;
         }
     }
 
@@ -125,7 +218,10 @@ public class BinaryTree : MonoBehaviour
     {
         if (subTree.Left == null)
         {
-            return subTree;
+            Node toReturn = subTree;
+            Debug.Log("make the lowest value null");
+            subTree = null;
+            return toReturn;
         }
         else
         {

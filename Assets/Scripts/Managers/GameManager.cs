@@ -35,7 +35,8 @@ public class GameManager : MonoBehaviour
 
         FileManager.LoadNodesFromFile();
         ClientsList = FileManager.LoadClients();
-        UIManagerComponent.InitializeAllNodes(BinaryTree.RootTree);
+        UIManagerComponent.Index = 0;
+        UIManagerComponent.RefreshNodesList(BinaryTree.RootTree);
     }
 
     private void Start()
@@ -52,6 +53,7 @@ public class GameManager : MonoBehaviour
     {
         FileManager.DeleteTreeFile();
         FileManager.SaveNodesToFile(BinaryTree.RootTree);
-        UIManagerComponent.InitializeAllNodes(BinaryTree.RootTree);
+        UIManagerComponent.Index = 0;
+        UIManagerComponent.RefreshNodesList(BinaryTree.RootTree);
     }
 }

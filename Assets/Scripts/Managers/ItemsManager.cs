@@ -5,14 +5,22 @@ using UnityEngine.UI;
 
 public class ItemsManager : MonoBehaviour
 {
+    public InventoryItem SelectedItem;
+    public InputField EditItemName;
+    public InputField EditItemPrice;
+    public InputField EditItemStock;
+    public InputField EditItemDiscount;
+
     [SerializeField]
     private InputField clientNameInput;
     [SerializeField]
-    private InputField itemName;
+    private InputField AddItemName;
     [SerializeField]
-    private InputField itemPrice;
+    private InputField AddItemPrice;
     [SerializeField]
-    private InputField itemStock;
+    private InputField AddItemStock;
+    [SerializeField]
+    private InputField AddItemDiscount;
 
     public void AddClients()
     {
@@ -34,24 +42,27 @@ public class ItemsManager : MonoBehaviour
         }
     }
 
-    public void OnAddPress()
+    public void AddItems()
     {
-        AddItems(itemName.text, float.Parse(itemPrice.text), int.Parse(itemStock.text));
+        Node ItemNode = new Node(AddItemName.text, float.Parse(AddItemPrice.text), int.Parse(AddItemStock.text), float.Parse(AddItemDiscount.text));
+        BinaryTree.RootTree = BinaryTree.AddToTree(BinaryTree.RootTree, ItemNode);
+        //GameManager.Instance.UIManagerComponent.InitializeNode(ItemNode);
+        GameManager.Instance.RefreshNodes();
+    }
+
+    public void EditItem()
+    {
+        BinaryTree.EditNode(BinaryTree.RootTree, SelectedItem.NodeItem.ItemName, EditItemName.text, float.Parse(EditItemPrice.text), int.Parse(EditItemStock.text), float.Parse(EditItemDiscount.text));
         GameManager.Instance.RefreshNodes();
     }
 
     public void OnRemovePress()
     {
-        BinaryTree.RootTree = BinaryTree.RemoveFromTree(BinaryTree.RootTree, itemName.text);
+        BinaryTree.RemoveFromTree(SelectedItem.NodeItem.ItemName);
+        SelectedItem.gameObject.SetActive(false);
+        GameManager.Instance.UIManagerComponent.ItemsQueue.Enqueue(SelectedItem);
+        GameManager.Instance.UIManagerComponent.UsedItemsList.Remove(SelectedItem);
         GameManager.Instance.RefreshNodes();
-    }
-
-    public void AddItems(string name, float price, int stock)
-    {
-        Node ItemNode = new Node(name, price, stock);
-        BinaryTree.RootTree = BinaryTree.AddToTree(BinaryTree.RootTree, ItemNode);
-
-        GameManager.Instance.UIManagerComponent.InitializeNode(ItemNode);
     }
 
     public void ResetShoppingCart()

@@ -2,19 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using TMPro;
 
-public class InventoryItem : MonoBehaviour
+public class InventoryItem : MonoBehaviour, IPointerClickHandler
 {
     public Node NodeItem { get; set; }
 
     [SerializeField]
-    private Text NameField;
+    private TextMeshProUGUI NameField;
     [SerializeField]
-    private Text StockField;
+    private TextMeshProUGUI StockField;
     [SerializeField]
-    private Text PriceField;
+    private TextMeshProUGUI PriceField;
+    [SerializeField]
+    private TextMeshProUGUI OldPriceField;
 
-    private void OnEnable()
+
+    private Toggle toggleButton;
+
+    private void Start()
+    {
+        toggleButton = GetComponent<Toggle>();
+    }
+
+    public void OnEnable()
     {
         NameField.text = NodeItem.ItemName;
         StockField.text = "Stock: " + NodeItem.Stock.ToString();
@@ -65,6 +77,41 @@ public class InventoryItem : MonoBehaviour
             GameManager.Instance.ShopingCartList.Add(item);
             GameManager.Instance.TotalPrice += itemValues.NodeItem.Price;
             GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+        }
+    }
+
+    private void SelectItem()
+    {
+        GameManager.Instance.ItemsManagerComponent.SelectedItem = this;
+        GameManager.Instance.ItemsManagerComponent.EditItemName.text = NodeItem.ItemName;
+        GameManager.Instance.ItemsManagerComponent.EditItemPrice.text = NodeItem.Price.ToString();
+        GameManager.Instance.ItemsManagerComponent.EditItemStock.text = NodeItem.Stock.ToString();
+        GameManager.Instance.ItemsManagerComponent.EditItemDiscount.text = NodeItem.Discount.ToString();
+    }
+
+    /// <summary>
+    /// Track right mouse click to open options panel
+    /// </summary>
+    /// <param name="eventData"></param>
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (toggleButton.isOn)
+        {
+            SelectItem();
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                GameManager.Instance.UIManagerComponent.OpenOptionsPanel();
+            }
+        }
+        else
+        {
+            GameManager.Instance.UIManagerComponent.CloseOptionsPanel();
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                SelectItem();
+                toggleButton.isOn = true;
+                GameManager.Instance.UIManagerComponent.OpenOptionsPanel();
+            }
         }
     }
 }
