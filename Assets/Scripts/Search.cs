@@ -10,7 +10,7 @@ public class Search : MonoBehaviour
 
     public void SearchItems()
     {
-        Node temp = BinaryTree.SearchTree(BinaryTree.RootTree, InputText.text);
+        Node temp = BinaryTree.SearchTree(InputText.text);
         if (temp != null)
         {
 

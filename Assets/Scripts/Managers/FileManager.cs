@@ -44,7 +44,7 @@ public class FileManager : MonoBehaviour
                 string nodePrice = node[1];
                 string nodeStock = node[2];
 
-                if (BinaryTree.SearchTree(BinaryTree.RootTree, nodeName) == null)
+                if (BinaryTree.SearchTree(nodeName) == null)
                 {
                     Node newNode = new Node(nodeName, float.Parse(nodePrice), int.Parse(nodeStock));
                     BinaryTree.RootTree = BinaryTree.AddToTree(BinaryTree.RootTree, newNode);
