@@ -15,7 +15,7 @@ public class FileManager : MonoBehaviour
         if (node != null)
         {
             string filePath = Path.Combine(Application.persistentDataPath, binerytreefile);
-            string row = node.ItemName + ',' + node.Price.ToString() + ',' + node.Stock.ToString() + Environment.NewLine;
+            string row = node.ItemName + ',' + node.Price.ToString() + ',' + node.Stock.ToString() + ',' + node.Discount.ToString() + Environment.NewLine;
             File.AppendAllText(filePath, row);
         }
 
@@ -43,11 +43,12 @@ public class FileManager : MonoBehaviour
                 string nodeName = node[0];
                 string nodePrice = node[1];
                 string nodeStock = node[2];
+                string nodeDiscount = node[3];
 
-                if (BinaryTree.SearchTree(nodeName) == null)
+                if (GameManager.Instance.ItemsTreeRoot.SearchTree(nodeName) == null)
                 {
-                    Node newNode = new Node(nodeName, float.Parse(nodePrice), int.Parse(nodeStock));
-                    BinaryTree.RootTree = BinaryTree.AddToTree(BinaryTree.RootTree, newNode);
+                    Node newNode = new Node(nodeName, float.Parse(nodePrice), int.Parse(nodeStock), float.Parse(nodeDiscount));
+                    GameManager.Instance.ItemsTreeRoot.RootTree.Left = GameManager.Instance.ItemsTreeRoot.AddToTree(GameManager.Instance.ItemsTreeRoot.RootTree.Left, newNode);
                 }
                 else
                 {
@@ -76,7 +77,8 @@ public class FileManager : MonoBehaviour
 
         foreach (var client in cList)
         {
-            File.AppendAllText(filePath, client.ClientName);
+            string row = client.ClientName + Environment.NewLine;
+            File.AppendAllText(filePath, row);
         }
     }
 

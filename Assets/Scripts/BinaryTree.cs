@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BinaryTree : MonoBehaviour
+public class BinaryTree
 {
-    public static Node RootTree = null;
+    public Node RootTree = new Node("", 0, 0);
 
-    public static Node AddToTree(Node parentNode, Node newNode)
+    public Node AddToTree(Node parentNode, Node newNode)
     {
         if (parentNode == null)
         {
@@ -32,10 +32,10 @@ public class BinaryTree : MonoBehaviour
         return parentNode;
     }
 
-    public static void RemoveFromTree(string nameToRemove)
+    public void RemoveFromTree(string nameToRemove)
     {
         Node parentNode = RootTree;
-        Node currentNode = RootTree;
+        Node currentNode = RootTree.Left;
         Node foundNode = null;
 
         while (currentNode != null)
@@ -60,102 +60,67 @@ public class BinaryTree : MonoBehaviour
 
         if (foundNode != null)
         {
-            if (foundNode != parentNode)
+            bool deleteRight = false;
+            if (foundNode == parentNode.Right)
             {
-                bool deleteRight = false;
-                if (foundNode == parentNode.Right)
-                {
-                    deleteRight = true;
-                }
+                deleteRight = true;
+            }
 
-                if (foundNode.Left == null && foundNode.Right == null)
+            if (foundNode.Left == null && foundNode.Right == null)
+            {
+                // Removing a leaf
+                if (deleteRight)
                 {
-                    // Removing a leaf
+                    parentNode.Right = null;
+                }
+                else
+                {
+                    parentNode.Left = null;
+                }
+            }
+            else if (foundNode.Left == null || foundNode.Right == null)
+            {
+                // Removing node with single child
+                if (foundNode.Left != null)
+                {
                     if (deleteRight)
                     {
-                        parentNode.Right = null;
+                        parentNode.Right = foundNode.Left;
                     }
                     else
                     {
-                        parentNode.Left = null;
+                        parentNode.Left = foundNode.Left;
                     }
                 }
-                else if (foundNode.Left == null || foundNode.Right == null)
+                else
                 {
-                    // Removing node with single child
-                    if (foundNode.Left != null)
-                    {
-                        if (deleteRight)
-                        {
-                            parentNode.Right = foundNode.Left;
-                        }
-                        else
-                        {
-                            parentNode.Left = foundNode.Left;
-                        }
-                    }
-                    else
-                    {
-                        if (deleteRight)
-                        {
-                            parentNode.Right = foundNode.Right;
-                        }
-                        else
-                        {
-                            parentNode.Left = foundNode.Right;
-                        }
-                    }
-                }
-                else if (foundNode.Left != null && foundNode.Right != null)
-                {
-                    // Removing node with two children
-                    Node replaceingNode;
                     if (deleteRight)
                     {
-                        replaceingNode = LowestValueRight(foundNode.Right);
-                        //replaceingNode.Left = foundNode.Left;
-                        replaceingNode.Right = foundNode.Right;
-                        parentNode.Right = replaceingNode;
+                        parentNode.Right = foundNode.Right;
                     }
                     else
                     {
-                        replaceingNode = HighestValueLeft(foundNode.Left);
-                        replaceingNode.Left = foundNode.Left;
-                        //replaceingNode.Right = foundNode.Right;
-                        parentNode.Left = replaceingNode;
+                        parentNode.Left = foundNode.Right;
                     }
                 }
             }
-            else
+            else if (foundNode.Left != null && foundNode.Right != null)
             {
-                if (foundNode.Left == null && foundNode.Right == null)
+                // Removing node with two children
+                Node replaceingNode;
+                if (deleteRight)
                 {
-                    parentNode = null;
-                }
-                else if (foundNode.Left == null || foundNode.Right == null)
-                {
-                    // Removing node with single child
-                    if (foundNode.Left != null)
-                    {
-                        parentNode.Left = foundNode.Left.Left;
-                        parentNode.Right = foundNode.Left.Right;
-                        parentNode = foundNode.Left;
-                    }
-                    else
-                    {
-                        parentNode.Left = foundNode.Right.Left;
-                        parentNode.Right = foundNode.Right.Right;
-                        parentNode = foundNode.Right;
-                    }
-                }
-                else if (foundNode.Left != null && foundNode.Right != null)
-                {
-                    // Removing node with two children
-                    Node replaceingNode;
                     replaceingNode = LowestValueRight(foundNode.Right);
+                    //replaceingNode.Left = foundNode.Left;
                     replaceingNode.Right = foundNode.Right;
+                    parentNode.Right = replaceingNode;
+                }
+                else
+                {
+                    replaceingNode = HighestValueLeft(foundNode.Left);
                     replaceingNode.Left = foundNode.Left;
-                    parentNode = replaceingNode;
+                    //replaceingNode.Right = foundNode.Right;
+                    parentNode.Left = replaceingNode;
                 }
             }
         }
@@ -165,7 +130,7 @@ public class BinaryTree : MonoBehaviour
         }
     }
 
-    public static void EditNode(Node parentNode, string searchName, string name, float price, int stock, float discount)
+    public void EditNode(Node parentNode, string searchName, string name, float price, int stock, float discount)
     {
         if (parentNode != null)
         {
@@ -209,7 +174,7 @@ public class BinaryTree : MonoBehaviour
         }
     }
 
-    public static Node SearchTree(string searchName)
+    public Node SearchTree(string searchName)
     {
         Node parentNode = RootTree;
 
@@ -233,31 +198,83 @@ public class BinaryTree : MonoBehaviour
         return null;
     }
 
-    public static Node LowestValueRight(Node subTree)
+    public Node LowestValueRight(Node subTree)
     {
-        if (subTree.Left == null)
+        if (subTree == null)
         {
-            Node toReturn = subTree;
-            subTree = null;
-            return toReturn;
+            Debug.Log("Tried to search for\"null\" in tree");
+            return null;
+        }
+        Node lowestValue = subTree;
+        Node parent = null;
+
+        while (lowestValue.Left != null)
+        {
+            parent = lowestValue;
+            lowestValue = lowestValue.Left;
+        }
+
+        if (parent == null)
+        {
+            parent = GetParent(lowestValue);
+            parent.Right = lowestValue.Right;
         }
         else
         {
-            return LowestValueRight(subTree.Left);
+            parent.Left = lowestValue.Right;
         }
+        return lowestValue;
     }
 
-    public static Node HighestValueLeft(Node subTree)
+    public Node HighestValueLeft(Node subTree)
     {
-        if (subTree.Right == null)
+        if (subTree == null)
         {
-            Node toReturn = subTree;
-            subTree = null;
-            return toReturn;
+            Debug.Log("Tried to search for\"null\" in tree");
+            return null;
+        }
+        Node highestValue = subTree;
+        Node parent = null;
+
+        while (highestValue.Right != null)
+        {
+            parent = highestValue;
+            highestValue = highestValue.Right;
+        }
+
+        if (parent == null)
+        {
+            parent = GetParent(highestValue);
+            parent.Left = highestValue.Left;
         }
         else
         {
-            return HighestValueLeft(subTree.Right);
+            parent.Right = highestValue.Left;
         }
+        return highestValue;
+    }
+
+    private Node GetParent(Node child)
+    {
+        Node curr = RootTree;
+        Node next = RootTree.Left;
+        if (RootTree.Left == null)
+        {
+            return null;
+        }
+
+        while (next.ItemName.ToLower().CompareTo(child.ItemName.ToLower()) != 0)
+        {
+            curr = next;
+            if (next.ItemName.ToLower().CompareTo(child.ItemName.ToLower()) > 0)
+            {
+                next = next.Left;
+            }
+            else if (next.ItemName.ToLower().CompareTo(child.ItemName.ToLower()) < 0)
+            {
+                next = next.Right;
+            }
+        }
+        return curr;
     }
 }

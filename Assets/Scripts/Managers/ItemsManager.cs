@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ItemsManager : MonoBehaviour
 {
-    public InventoryItem SelectedItem;
+    public InventoryItem SelectedItem { get; set; }
     public InputField EditItemName;
     public InputField EditItemPrice;
     public InputField EditItemStock;
@@ -14,13 +14,13 @@ public class ItemsManager : MonoBehaviour
     [SerializeField]
     private InputField clientNameInput;
     [SerializeField]
-    private InputField AddItemName;
+    private InputField addItemName;
     [SerializeField]
-    private InputField AddItemPrice;
+    private InputField addItemPrice;
     [SerializeField]
-    private InputField AddItemStock;
+    private InputField addItemStock;
     [SerializeField]
-    private InputField AddItemDiscount;
+    private InputField addItemDiscount;
 
     public void AddClients()
     {
@@ -39,45 +39,37 @@ public class ItemsManager : MonoBehaviour
             Clients client = new Clients(clientNameInput.text);
             GameManager.Instance.ClientsList.Add(client);
             FileManager.SaveClients(GameManager.Instance.ClientsList);
+            Dropdown.OptionData newClient = new Dropdown.OptionData();
+            newClient.text = client.ClientName;
+            GameManager.Instance.UIManagerComponent.ClientsSelection.options.Add(newClient);
         }
     }
 
     public void AddItems()
     {
-        Node ItemNode = new Node(AddItemName.text, float.Parse(AddItemPrice.text), int.Parse(AddItemStock.text), float.Parse(AddItemDiscount.text));
-        BinaryTree.RootTree = BinaryTree.AddToTree(BinaryTree.RootTree, ItemNode);
+        Node ItemNode = new Node(addItemName.text, float.Parse(addItemPrice.text), int.Parse(addItemStock.text), float.Parse(addItemDiscount.text));
+        GameManager.Instance.ItemsTreeRoot.RootTree.Left = GameManager.Instance.ItemsTreeRoot.AddToTree(GameManager.Instance.ItemsTreeRoot.RootTree.Left, ItemNode);
         //GameManager.Instance.UIManagerComponent.InitializeNode(ItemNode);
         GameManager.Instance.RefreshNodes();
     }
 
     public void EditItem()
     {
-        BinaryTree.EditNode(BinaryTree.RootTree, SelectedItem.NodeItem.ItemName, EditItemName.text, float.Parse(EditItemPrice.text), int.Parse(EditItemStock.text), float.Parse(EditItemDiscount.text));
+        GameManager.Instance.ItemsTreeRoot.EditNode(GameManager.Instance.ItemsTreeRoot.RootTree.Left, SelectedItem.NodeItem.ItemName, EditItemName.text, float.Parse(EditItemPrice.text), int.Parse(EditItemStock.text), float.Parse(EditItemDiscount.text));
         GameManager.Instance.RefreshNodes();
     }
 
     public void OnRemovePress()
     {
-        BinaryTree.RemoveFromTree(SelectedItem.NodeItem.ItemName);
+        GameManager.Instance.ItemsTreeRoot.RemoveFromTree(SelectedItem.NodeItem.ItemName);
         SelectedItem.gameObject.SetActive(false);
         GameManager.Instance.UIManagerComponent.ItemsQueue.Enqueue(SelectedItem);
         GameManager.Instance.UIManagerComponent.UsedItemsList.Remove(SelectedItem);
         GameManager.Instance.RefreshNodes();
     }
 
-    public void ResetShoppingCart()
-    {
-        foreach (var item in GameManager.Instance.ShopingCartList)
-        {
-            GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-            item.AddedToCart = false;
-            item.gameObject.SetActive(false);
-        }
-    }
-
     public void SendOrder()
     {
-        Orders CurentOrder = new Orders(GameManager.Instance.ShopingCartList);
-        ResetShoppingCart();
+        //ResetShoppingCart();
     }
 }

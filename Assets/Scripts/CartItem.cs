@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CartItem : MonoBehaviour
 {
@@ -11,11 +12,13 @@ public class CartItem : MonoBehaviour
     public bool AddedToCart = false;
 
     [SerializeField]
-    private Text NameField;
+    private TextMeshProUGUI NameField;
     [SerializeField]
-    private Text QuantityField;
+    private TextMeshProUGUI QuantityField;
     [SerializeField]
-    private Text PriceField;
+    private TextMeshProUGUI PriceField;
+    [SerializeField]
+    private TextMeshProUGUI OldPriceField;
 
     private void OnEnable()
     {
@@ -23,7 +26,20 @@ public class CartItem : MonoBehaviour
         {
             NameField.text = NodeItem.ItemName;
             QuantityField.text = "Quantity: " + Quantity.ToString();
-            PriceField.text = "Price: " + NodeItem.Price.ToString() + "$";
+            //PriceField.text = "Price: " + NodeItem.Price.ToString() + "$";
+            if (NodeItem.Discount != 0)
+            {
+                OldPriceField.text = "Old price: " + NodeItem.Price.ToString() + "$";
+                NodeItem.Price -= (NodeItem.Discount / 100 * NodeItem.Price);
+                PriceField.text = "Price: " + NodeItem.Price + "$";
+                OldPriceField.gameObject.SetActive(true);
+            }
+            else
+            {
+                OldPriceField.gameObject.SetActive(false);
+                PriceField.text = "Price: " + NodeItem.Price.ToString() + "$";
+            }
+            GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
         }
     }
 
@@ -53,6 +69,7 @@ public class CartItem : MonoBehaviour
             {
                 gameObject.SetActive(false);
                 AddedToCart = false;
+                GameManager.Instance.ShopingCartPool.Enqueue(this);
             }
         }
     }

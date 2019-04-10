@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
     public Transform ShoppingCartContents;
     public double TotalPrice { get; set; }
 
+    public BinaryTree ItemsTreeRoot = new BinaryTree();
+    public BinaryTree OrdersTreeRoot = new BinaryTree();
+
     private string[] nodesData;
     private int ShoppingCartPoolSize = 10;
 
@@ -36,7 +39,8 @@ public class GameManager : MonoBehaviour
         FileManager.LoadNodesFromFile();
         ClientsList = FileManager.LoadClients();
         UIManagerComponent.Index = 0;
-        UIManagerComponent.RefreshNodesList(BinaryTree.RootTree);
+
+        UIManagerComponent.RefreshNodesList(ItemsTreeRoot.RootTree.Left);
     }
 
     private void Start()
@@ -52,8 +56,9 @@ public class GameManager : MonoBehaviour
     public void RefreshNodes()
     {
         FileManager.DeleteTreeFile();
-        FileManager.SaveNodesToFile(BinaryTree.RootTree);
+        FileManager.SaveNodesToFile(ItemsTreeRoot.RootTree.Left);
         UIManagerComponent.Index = 0;
-        UIManagerComponent.RefreshNodesList(BinaryTree.RootTree);
+        UIManagerComponent.RefreshNodesList(ItemsTreeRoot.RootTree.Left);
+        UIManagerComponent.CalculateTotalPrice();
     }
 }

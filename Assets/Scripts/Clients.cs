@@ -7,16 +7,9 @@ using UnityEngine;
 public class Clients
 {
     public string ClientName;
-    public List<Orders> OrdersHistory = new List<Orders>();
-
 
     public Clients(string name)
     {
         ClientName = name;
-    }
-
-    public void AddNewOrder(Orders order)
-    {
-        OrdersHistory.Add(order);
     }
 }

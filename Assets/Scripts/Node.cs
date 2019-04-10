@@ -13,6 +13,18 @@ public class Node
     public int Stock;
     public float Discount;
 
+    public Node()
+    {
+    
+    }
+    
+    //public Node(Node left, Node right, string name)
+    //{
+    //    Left = left;
+    //    right = Right;
+    //    name = ItemName;
+    //}
+
     public Node(string name, float price, int stock)
     {
         ItemName = name;

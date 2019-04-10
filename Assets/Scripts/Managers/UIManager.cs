@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     public Queue<InventoryItem> ItemsQueue = new Queue<InventoryItem>();
     public List<InventoryItem> UsedItemsList = new List<InventoryItem>();
     public int Index { get; set; } = 0;
+    public Dropdown ClientsSelection;
 
     [SerializeField]
     private GameObject optionsPanel;
@@ -18,22 +19,23 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Transform itemsParent;
     [SerializeField]
-    private Dropdown ClientsSelection;
-    [SerializeField]
     private Text totalPriceField;
     [SerializeField]
     private Text ErrorMessage;
+    [SerializeField]
+    private InputField searchInput;
 
     private int PooledItemsNmber = 20;
 
     private void Start()
     {
-        foreach (var client in GameManager.Instance.ClientsList)
+        foreach (Clients client in GameManager.Instance.ClientsList)
         {
             Dropdown.OptionData newClient = new Dropdown.OptionData();
             newClient.text = client.ClientName;
             ClientsSelection.options.Add(newClient);
         }
+        ClientsSelection.value = 0;
         CalculateTotalPrice();
 
         for (int i = 0; i <= PooledItemsNmber; i++)
@@ -45,9 +47,20 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void SelectClient()
+    {
+        foreach (CartItem item in GameManager.Instance.ShopingCartList)
+        {
+            item.gameObject.SetActive(false);
+            item.AddedToCart = false;
+            GameManager.Instance.ShopingCartPool.Enqueue(item);
+        }
+        GameManager.Instance.ShopingCartList.Clear();
+    }
+
     public void CalculateTotalPrice()
     {
-        totalPriceField.text = "Total: " + GameManager.Instance.TotalPrice + "$";
+        totalPriceField.text = "Total: " + string.Format("{0:0.00}", GameManager.Instance.TotalPrice) + "$";
     }
 
     public void PrintErrorMessage(string message)
@@ -115,9 +128,31 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void SearchNodes()
+    public void SearchItems()
     {
-
+        if (!string.IsNullOrEmpty(searchInput.text))
+        {
+            foreach (var item in UsedItemsList)
+            {
+                string itemName = item.NodeItem.ItemName.Trim().ToLower();
+                string searchName = searchInput.text.Trim().ToLower();
+                if (itemName.Contains(searchName))
+                {
+                    item.gameObject.SetActive(true);
+                }
+                else
+                {
+                    item.gameObject.SetActive(false);
+                }
+            }
+        }
+        else
+        {
+            foreach (var item in UsedItemsList)
+            {
+                item.gameObject.SetActive(true);
+            }
+        }
     }
 
     /// <summary>
