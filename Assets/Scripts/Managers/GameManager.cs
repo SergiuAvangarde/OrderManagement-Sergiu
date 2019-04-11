@@ -12,16 +12,17 @@ public class GameManager : MonoBehaviour
 
     public List<CartItem> ShopingCartList = new List<CartItem>();
     public Queue<CartItem> ShopingCartPool = new Queue<CartItem>();
+    public Queue<CartItem> OrderHistoryPool = new Queue<CartItem>();
     public GameObject CartItem;
-    public GameObject AddNewItem;
+    public GameObject OrderItem;
     public Transform ShoppingCartContents;
+    public Transform OrderHistoryContents;
     public double TotalPrice { get; set; }
 
     public ItemsBinaryTree ItemsTreeRoot = new ItemsBinaryTree();
     public OrdersBinaryTree OrdersTreeRoot = new OrdersBinaryTree();
 
-    private string[] nodesData;
-    private int ShoppingCartPoolSize = 10;
+    private int poolSize = 10;
 
     private void Awake()
     {
@@ -39,19 +40,20 @@ public class GameManager : MonoBehaviour
         FileManager.LoadClients();
         UIManagerComponent.Index = 0;
 
-        //PrintTree(ItemsTreeRoot.RootTree.Left);
-
         UIManagerComponent.RefreshNodesList(ItemsTreeRoot.RootTree.Left);
         UIManagerComponent.RefreshClientsDropdown(OrdersTreeRoot.RootTree.Left);
     }
 
     private void Start()
     {
-        for (int i = 0; i <= ShoppingCartPoolSize; i++)
+        for (int i = 0; i <= poolSize; i++)
         {
             GameObject listItem = Instantiate(CartItem, ShoppingCartContents);
+            GameObject orderListItem = Instantiate(OrderItem, OrderHistoryContents);
             CartItem itemValues = listItem.GetComponent<CartItem>();
+            CartItem orderValues = orderListItem.GetComponent<CartItem>();
             ShopingCartPool.Enqueue(itemValues);
+            OrderHistoryPool.Enqueue(orderValues);
         }
     }
 
@@ -65,26 +67,5 @@ public class GameManager : MonoBehaviour
         UIManagerComponent.ClientsSelection.ClearOptions();
         UIManagerComponent.RefreshClientsDropdown(OrdersTreeRoot.RootTree.Left);
         UIManagerComponent.CalculateTotalPrice();
-    }
-
-    public void PrintTree(ItemNode node)
-    {
-        if(node != null)
-        {
-            Debug.Log(node.ItemName);
-
-            if(node.Right != null)
-            {
-                Debug.Log("right " + node.Right.ItemName);
-                PrintTree(node.Right);
-            }
-
-            if (node.Left != null)
-            {
-                Debug.Log("left " + node.Left.ItemName);
-                PrintTree(node.Left);
-            }
-
-        }
     }
 }

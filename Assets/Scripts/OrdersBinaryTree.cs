@@ -129,6 +129,90 @@ public class OrdersBinaryTree
         }
     }
 
+    public void AddToOrder(OrderNode parentNode, string searchName, CartItem order)
+    {
+        if (parentNode != null)
+        {
+            if (parentNode.ClientName.ToLower() == searchName.ToLower())
+            {
+                parentNode.ClientName = searchName;
+                parentNode.OrderedItems.Add(order);
+            }
+            else
+            {
+                int value = searchName.ToLower().CompareTo(parentNode.ClientName.ToLower());
+                if (value > 0)
+                {
+                    if (parentNode.Right != null)
+                    {
+                        AddToOrder(parentNode.Right, searchName, order);
+                    }
+                    else
+                    {
+                        GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
+                    }
+                }
+                else
+                {
+                    if (parentNode.Left != null)
+                    {
+                        AddToOrder(parentNode.Left, searchName, order);
+                    }
+                    else
+                    {
+                        GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
+                    }
+                }
+            }
+        }
+        else
+        {
+            GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
+        }
+    }
+
+    public void EditNode(OrderNode parentNode, string searchName, string clientName, List<CartItem> orders)
+    {
+        if (parentNode != null)
+        {
+            if (parentNode.ClientName.ToLower() == searchName.ToLower())
+            {
+                parentNode.ClientName = clientName;
+                parentNode.OrderedItems = orders;
+            }
+            else
+            {
+                int value = searchName.ToLower().CompareTo(parentNode.ClientName.ToLower());
+                if (value > 0)
+                {
+                    if (parentNode.Right != null)
+                    {
+                        EditNode(parentNode.Right, searchName, clientName, orders);
+                    }
+                    else
+                    {
+                        GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
+                    }
+                }
+                else
+                {
+                    if (parentNode.Left != null)
+                    {
+                        EditNode(parentNode.Left, searchName, clientName, orders);
+                    }
+                    else
+                    {
+                        GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
+                    }
+                }
+            }
+        }
+        else
+        {
+            GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
+        }
+    }
+
     public OrderNode SearchTree(string searchName)
     {
         OrderNode parentNode = RootTree;

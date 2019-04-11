@@ -92,7 +92,6 @@ public class FileManager : MonoBehaviour
                 }
             }
             string row = node.ClientName + ',' + orders + Environment.NewLine;
-            Debug.Log(row);
             File.AppendAllText(filePath, row);
 
             if (node.Left != null)

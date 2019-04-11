@@ -46,7 +46,12 @@ public class UIManager : MonoBehaviour
             item.AddedToCart = false;
             GameManager.Instance.ShopingCartPool.Enqueue(item);
         }
+
+        //should change the order history list here...
+
         GameManager.Instance.ShopingCartList.Clear();
+        GameManager.Instance.TotalPrice = 0;
+        GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
     }
 
     public void CalculateTotalPrice()
@@ -57,6 +62,11 @@ public class UIManager : MonoBehaviour
     public void PrintErrorMessage(string message)
     {
         ErrorMessage.text = message;
+    }
+
+    public void ShowOrdersHistory()
+    {
+
     }
 
     public void InitializeNode(ItemNode node)
@@ -126,6 +136,7 @@ public class UIManager : MonoBehaviour
             Dropdown.OptionData newClient = new Dropdown.OptionData();
             newClient.text = node.ClientName;
             ClientsSelection.options.Add(newClient);
+            ClientsSelection.value = 0;
 
             if (node.Right != null)
             {
@@ -163,6 +174,11 @@ public class UIManager : MonoBehaviour
                 item.gameObject.SetActive(true);
             }
         }
+    }
+
+    public void ShowOrders()
+    {
+
     }
 
     /// <summary>
@@ -212,6 +228,4 @@ public class UIManager : MonoBehaviour
         optionsDropdown.GetComponent<RectTransform>().pivot = new Vector2(xValue, yValue);
         optionsDropdown.SetActive(true);
     }
-
-
 }
