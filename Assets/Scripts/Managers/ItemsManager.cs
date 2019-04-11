@@ -24,30 +24,17 @@ public class ItemsManager : MonoBehaviour
 
     public void AddClients()
     {
-        bool exists = false;
-        foreach (Clients clientName in GameManager.Instance.ClientsList)
-        {
-            if (clientName.ClientName.ToLower().Trim() == clientNameInput.text.ToLower().Trim())
-            {
-                exists = true;
-                GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_CLIENT_EXISTS);
-            }
-        }
-
-        if (!exists)
-        {
-            Clients client = new Clients(clientNameInput.text);
-            GameManager.Instance.ClientsList.Add(client);
-            FileManager.SaveClients(GameManager.Instance.ClientsList);
-            Dropdown.OptionData newClient = new Dropdown.OptionData();
-            newClient.text = client.ClientName;
-            GameManager.Instance.UIManagerComponent.ClientsSelection.options.Add(newClient);
-        }
+        OrderNode client = new OrderNode(clientNameInput.text);
+        GameManager.Instance.OrdersTreeRoot.RootTree.Left = GameManager.Instance.OrdersTreeRoot.AddToTree(GameManager.Instance.OrdersTreeRoot.RootTree.Left, client);
+        Dropdown.OptionData newClient = new Dropdown.OptionData();
+        newClient.text = client.ClientName;
+        GameManager.Instance.UIManagerComponent.ClientsSelection.options.Add(newClient);
+        FileManager.SaveClients(client);
     }
 
     public void AddItems()
     {
-        Node ItemNode = new Node(addItemName.text, float.Parse(addItemPrice.text), int.Parse(addItemStock.text), float.Parse(addItemDiscount.text));
+        ItemNode ItemNode = new ItemNode(addItemName.text, float.Parse(addItemPrice.text), int.Parse(addItemStock.text), float.Parse(addItemDiscount.text));
         GameManager.Instance.ItemsTreeRoot.RootTree.Left = GameManager.Instance.ItemsTreeRoot.AddToTree(GameManager.Instance.ItemsTreeRoot.RootTree.Left, ItemNode);
         //GameManager.Instance.UIManagerComponent.InitializeNode(ItemNode);
         GameManager.Instance.RefreshNodes();

@@ -29,15 +29,6 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        foreach (Clients client in GameManager.Instance.ClientsList)
-        {
-            Dropdown.OptionData newClient = new Dropdown.OptionData();
-            newClient.text = client.ClientName;
-            ClientsSelection.options.Add(newClient);
-        }
-        ClientsSelection.value = 0;
-        CalculateTotalPrice();
-
         for (int i = 0; i <= PooledItemsNmber; i++)
         {
             GameObject listItem = Instantiate(itemPrefab, itemsParent);
@@ -68,7 +59,7 @@ public class UIManager : MonoBehaviour
         ErrorMessage.text = message;
     }
 
-    public void InitializeNode(Node node)
+    public void InitializeNode(ItemNode node)
     {
         try
         {
@@ -90,7 +81,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void RefreshNodesList(Node node)
+    public void RefreshNodesList(ItemNode node)
     {
         if (node != null)
         {
@@ -124,6 +115,25 @@ public class UIManager : MonoBehaviour
             {
                 InitializeNode(node);
                 RefreshNodesList(node.Right);
+            }
+        }
+    }
+
+    public void RefreshClientsDropdown(OrderNode node)
+    {
+        if (node != null)
+        {
+            Dropdown.OptionData newClient = new Dropdown.OptionData();
+            newClient.text = node.ClientName;
+            ClientsSelection.options.Add(newClient);
+
+            if (node.Right != null)
+            {
+                RefreshClientsDropdown(node.Right);
+            }
+            if (node.Left != null)
+            {
+                RefreshClientsDropdown(node.Left);
             }
         }
     }

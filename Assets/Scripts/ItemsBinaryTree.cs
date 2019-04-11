@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BinaryTree
+public class ItemsBinaryTree
 {
-    public Node RootTree = new Node("", 0, 0);
+    public ItemNode RootTree = new ItemNode("", 0, 0);
 
-    public Node AddToTree(Node parentNode, Node newNode)
+    public ItemNode AddToTree(ItemNode parentNode, ItemNode newNode)
     {
         if (parentNode == null)
         {
@@ -34,9 +34,9 @@ public class BinaryTree
 
     public void RemoveFromTree(string nameToRemove)
     {
-        Node parentNode = RootTree;
-        Node currentNode = RootTree.Left;
-        Node foundNode = null;
+        ItemNode parentNode = RootTree;
+        ItemNode currentNode = RootTree.Left;
+        ItemNode foundNode = null;
 
         while (currentNode != null)
         {
@@ -107,7 +107,7 @@ public class BinaryTree
             else if (foundNode.Left != null && foundNode.Right != null)
             {
                 // Removing node with two children
-                Node replaceingNode;
+                ItemNode replaceingNode;
                 if (deleteRight)
                 {
                     replaceingNode = LowestValueRight(foundNode.Right);
@@ -130,7 +130,7 @@ public class BinaryTree
         }
     }
 
-    public void EditNode(Node parentNode, string searchName, string name, float price, int stock, float discount)
+    public void EditNode(ItemNode parentNode, string searchName, string name, float price, int stock, float discount)
     {
         if (parentNode != null)
         {
@@ -174,9 +174,9 @@ public class BinaryTree
         }
     }
 
-    public Node SearchTree(string searchName)
+    public ItemNode SearchTree(string searchName)
     {
-        Node parentNode = RootTree;
+        ItemNode parentNode = RootTree;
 
         while (parentNode != null)
         {
@@ -198,15 +198,15 @@ public class BinaryTree
         return null;
     }
 
-    public Node LowestValueRight(Node subTree)
+    public ItemNode LowestValueRight(ItemNode subTree)
     {
         if (subTree == null)
         {
             Debug.Log("Tried to search for\"null\" in tree");
             return null;
         }
-        Node lowestValue = subTree;
-        Node parent = null;
+        ItemNode lowestValue = subTree;
+        ItemNode parent = null;
 
         while (lowestValue.Left != null)
         {
@@ -226,15 +226,15 @@ public class BinaryTree
         return lowestValue;
     }
 
-    public Node HighestValueLeft(Node subTree)
+    public ItemNode HighestValueLeft(ItemNode subTree)
     {
         if (subTree == null)
         {
             Debug.Log("Tried to search for\"null\" in tree");
             return null;
         }
-        Node highestValue = subTree;
-        Node parent = null;
+        ItemNode highestValue = subTree;
+        ItemNode parent = null;
 
         while (highestValue.Right != null)
         {
@@ -254,10 +254,10 @@ public class BinaryTree
         return highestValue;
     }
 
-    private Node GetParent(Node child)
+    private ItemNode GetParent(ItemNode child)
     {
-        Node curr = RootTree;
-        Node next = RootTree.Left;
+        ItemNode curr = RootTree;
+        ItemNode next = RootTree.Left;
         if (RootTree.Left == null)
         {
             return null;

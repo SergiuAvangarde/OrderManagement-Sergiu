@@ -6,7 +6,8 @@ using TMPro;
 
 public class CartItem : MonoBehaviour
 {
-    public Node NodeItem { get; set; }
+    public ItemNode NodeItem { get; set; }
+    public float Price { get; set; }
     public int Quantity { get; set; } = 0;
 
     public bool AddedToCart = false;
@@ -26,18 +27,18 @@ public class CartItem : MonoBehaviour
         {
             NameField.text = NodeItem.ItemName;
             QuantityField.text = "Quantity: " + Quantity.ToString();
-            //PriceField.text = "Price: " + NodeItem.Price.ToString() + "$";
             if (NodeItem.Discount != 0)
             {
                 OldPriceField.text = "Old price: " + NodeItem.Price.ToString() + "$";
-                NodeItem.Price -= (NodeItem.Discount / 100 * NodeItem.Price);
-                PriceField.text = "Price: " + NodeItem.Price + "$";
+                Price = NodeItem.Price - (NodeItem.Discount / 100 * NodeItem.Price);
+                PriceField.text = "Price: " + Price + "$";
                 OldPriceField.gameObject.SetActive(true);
             }
             else
             {
                 OldPriceField.gameObject.SetActive(false);
-                PriceField.text = "Price: " + NodeItem.Price.ToString() + "$";
+                Price = NodeItem.Price;
+                PriceField.text = "Price: " + Price + "$";
             }
             GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
         }
@@ -51,7 +52,7 @@ public class CartItem : MonoBehaviour
             {
                 Quantity++;
                 QuantityField.text = "Quantity: " + Quantity.ToString();
-                GameManager.Instance.TotalPrice += NodeItem.Price;
+                GameManager.Instance.TotalPrice += Price;
                 GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
             }
             else
@@ -63,7 +64,7 @@ public class CartItem : MonoBehaviour
         {
             Quantity--;
             QuantityField.text = "Quantity: " + Quantity.ToString();
-            GameManager.Instance.TotalPrice -= NodeItem.Price;
+            GameManager.Instance.TotalPrice -= Price;
             GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
             if (Quantity == 0)
             {

@@ -7,7 +7,7 @@ using TMPro;
 
 public class InventoryItem : MonoBehaviour, IPointerClickHandler
 {
-    public Node NodeItem { get; set; }
+    public ItemNode NodeItem { get; set; }
 
     [SerializeField]
     private TextMeshProUGUI NameField;
