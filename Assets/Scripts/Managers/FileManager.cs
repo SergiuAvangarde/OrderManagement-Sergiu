@@ -17,16 +17,16 @@ public class FileManager : MonoBehaviour
             string filePath = Path.Combine(Application.persistentDataPath, itemsTreeFile);
             string row = node.ItemName + ',' + node.Price.ToString() + ',' + node.Stock.ToString() + ',' + node.Discount.ToString() + Environment.NewLine;
             File.AppendAllText(filePath, row);
-        }
 
-        if (node.Left != null)
-        {
-            SaveItemsToFile(node.Left);
-        }
+            if (node.Left != null)
+            {
+                SaveItemsToFile(node.Left);
+            }
 
-        if (node.Right != null)
-        {
-            SaveItemsToFile(node.Right);
+            if (node.Right != null)
+            {
+                SaveItemsToFile(node.Right);
+            }
         }
     }
 
@@ -82,7 +82,7 @@ public class FileManager : MonoBehaviour
     {
         if (node != null)
         {
-            string filePath = Path.Combine(Application.persistentDataPath, itemsTreeFile);
+            string filePath = Path.Combine(Application.persistentDataPath, clientsTreeFile);
             string orders = null;
             if (node.OrderedItems != null)
             {
@@ -92,17 +92,18 @@ public class FileManager : MonoBehaviour
                 }
             }
             string row = node.ClientName + ',' + orders + Environment.NewLine;
+            Debug.Log(row);
             File.AppendAllText(filePath, row);
-        }
 
-        if (node.Left != null)
-        {
-            SaveClients(node.Left);
-        }
+            if (node.Left != null)
+            {
+                SaveClients(node.Left);
+            }
 
-        if (node.Right != null)
-        {
-            SaveClients(node.Right);
+            if (node.Right != null)
+            {
+                SaveClients(node.Right);
+            }
         }
     }
 

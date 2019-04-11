@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
     public UIManager UIManagerComponent;
     public ItemsManager ItemsManagerComponent;
 
-    //public List<Clients> ClientsList = new List<Clients>();
     public List<CartItem> ShopingCartList = new List<CartItem>();
     public Queue<CartItem> ShopingCartPool = new Queue<CartItem>();
     public GameObject CartItem;
@@ -40,7 +39,7 @@ public class GameManager : MonoBehaviour
         FileManager.LoadClients();
         UIManagerComponent.Index = 0;
 
-        PrintTree(ItemsTreeRoot.RootTree.Left);
+        //PrintTree(ItemsTreeRoot.RootTree.Left);
 
         UIManagerComponent.RefreshNodesList(ItemsTreeRoot.RootTree.Left);
         UIManagerComponent.RefreshClientsDropdown(OrdersTreeRoot.RootTree.Left);
@@ -63,6 +62,7 @@ public class GameManager : MonoBehaviour
         FileManager.SaveClients(OrdersTreeRoot.RootTree.Left);
         UIManagerComponent.Index = 0;
         UIManagerComponent.RefreshNodesList(ItemsTreeRoot.RootTree.Left);
+        UIManagerComponent.ClientsSelection.ClearOptions();
         UIManagerComponent.RefreshClientsDropdown(OrdersTreeRoot.RootTree.Left);
         UIManagerComponent.CalculateTotalPrice();
     }

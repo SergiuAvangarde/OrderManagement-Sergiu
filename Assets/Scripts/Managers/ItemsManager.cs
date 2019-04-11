@@ -29,7 +29,7 @@ public class ItemsManager : MonoBehaviour
         Dropdown.OptionData newClient = new Dropdown.OptionData();
         newClient.text = client.ClientName;
         GameManager.Instance.UIManagerComponent.ClientsSelection.options.Add(newClient);
-        FileManager.SaveClients(client);
+        GameManager.Instance.RefreshNodes();
     }
 
     public void AddItems()
@@ -57,6 +57,6 @@ public class ItemsManager : MonoBehaviour
 
     public void SendOrder()
     {
-        //ResetShoppingCart();
+        
     }
 }
