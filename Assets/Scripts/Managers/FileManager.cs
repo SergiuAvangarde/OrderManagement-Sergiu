@@ -10,12 +10,12 @@ public class FileManager : MonoBehaviour
     private static readonly string itemsTreeFile = "BinaryTreeData.csv";
     private static readonly string clientsTreeFile = "ClientsData.csv";
 
-    public static void SaveItemsToFile(ItemNode node)
+    public static void SaveItemsToFile(Node<ItemNode> node)
     {
         if (node != null)
         {
             string filePath = Path.Combine(Application.persistentDataPath, itemsTreeFile);
-            string row = node.ItemName + ',' + node.Price.ToString() + ',' + node.Stock.ToString() + ',' + node.Discount.ToString() + Environment.NewLine;
+            string row = node.Key.Name + ',' + node.Key.Price.ToString() + ',' + node.Key.Stock.ToString() + ',' + node.Key.Discount.ToString() + Environment.NewLine;
             File.AppendAllText(filePath, row);
 
             if (node.Left != null)
@@ -47,7 +47,8 @@ public class FileManager : MonoBehaviour
 
                 if (GameManager.Instance.ItemsTreeRoot.SearchTree(nodeName) == null)
                 {
-                    ItemNode newNode = new ItemNode(nodeName, float.Parse(nodePrice), int.Parse(nodeStock), float.Parse(nodeDiscount));
+                    ItemNode newItem = new ItemNode(nodeName, float.Parse(nodePrice), int.Parse(nodeStock), float.Parse(nodeDiscount));
+                    Node<ItemNode> newNode = new Node<ItemNode>(newItem);
                     GameManager.Instance.ItemsTreeRoot.RootTree.Left = GameManager.Instance.ItemsTreeRoot.AddToTree(GameManager.Instance.ItemsTreeRoot.RootTree.Left, newNode);
                 }
                 else
@@ -78,20 +79,20 @@ public class FileManager : MonoBehaviour
         }
     }
 
-    public static void SaveClients(OrderNode node)
+    public static void SaveClients(Node<OrderNode> node)
     {
         if (node != null)
         {
             string filePath = Path.Combine(Application.persistentDataPath, clientsTreeFile);
             string orders = null;
-            if (node.OrderedItems != null)
+            if (node.Key.OrderedItems != null)
             {
-                foreach (var order in node.OrderedItems)
+                foreach (var order in node.Key.OrderedItems)
                 {
-                    orders += '&' + order.NodeItem.ItemName + ';' + order.Price + ';' + order.Quantity + ';' + order.Discount;
+                    orders += '&' + order.NodeItem.Name + ';' + order.Price + ';' + order.Quantity + ';' + order.Discount;
                 }
             }
-            string row = node.ClientName + ',' + orders + Environment.NewLine;
+            string row = node.Key.Name + ',' + orders + Environment.NewLine;
             File.AppendAllText(filePath, row);
 
             if (node.Left != null)
@@ -133,7 +134,7 @@ public class FileManager : MonoBehaviour
                         {
                             string[] orderInfo = order.Split(';');
                             CartItem item = new CartItem();
-                            item.NodeItem = GameManager.Instance.ItemsTreeRoot.SearchTree(orderInfo[0]);
+                            item.NodeItem = GameManager.Instance.ItemsTreeRoot.SearchTree(orderInfo[0]).Key;
                             item.Price = float.Parse(orderInfo[1]);
                             item.Quantity = int.Parse(orderInfo[2]);
                             item.Discount = int.Parse(orderInfo[3]);
@@ -144,7 +145,8 @@ public class FileManager : MonoBehaviour
 
                 if (GameManager.Instance.ItemsTreeRoot.SearchTree(ClientName) == null)
                 {
-                    OrderNode newNode = new OrderNode(ClientName, OrderedItems);
+                    OrderNode newOrder = new OrderNode(ClientName, OrderedItems);
+                    Node<OrderNode> newNode = new Node<OrderNode>(newOrder);
                     GameManager.Instance.OrdersTreeRoot.RootTree.Left = GameManager.Instance.OrdersTreeRoot.AddToTree(GameManager.Instance.OrdersTreeRoot.RootTree.Left, newNode);
                 }
                 else

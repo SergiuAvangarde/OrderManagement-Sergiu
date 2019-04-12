@@ -28,7 +28,7 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
 
     public void OnEnable()
     {
-        NameField.text = NodeItem.ItemName;
+        NameField.text = NodeItem.Name;
         StockField.text = "Stock: " + NodeItem.Stock.ToString();
         if (NodeItem.Discount != 0)
         {
@@ -48,22 +48,11 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         foreach (CartItem item in GameManager.Instance.ShopingCartList)
         {
-            if (item.NodeItem.ItemName.ToLower().Trim() == NodeItem.ItemName.ToLower().Trim())
+            if (item.NodeItem.Name.ToLower().Trim() == NodeItem.Name.ToLower().Trim())
             {
                 if (item.NodeItem.Stock > item.Quantity)
                 {
                     item.Quantity++;
-                    //if (NodeItem.Discount != 0)
-                    //{
-                    //    float price = NodeItem.Price - (NodeItem.Discount / 100 * NodeItem.Price);
-                    //    GameManager.Instance.TotalPrice += price;
-                    //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-                    //}
-                    //else
-                    //{
-                    //    GameManager.Instance.TotalPrice += item.NodeItem.Price;
-                    //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-                    //}
                 }
                 else
                 {
@@ -82,17 +71,6 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
             item.Quantity++;
             item.gameObject.SetActive(true);
             GameManager.Instance.ShopingCartList.Add(item);
-            //if (NodeItem.Discount != 0)
-            //{
-            //    float price = NodeItem.Price - (NodeItem.Discount / 100 * NodeItem.Price);
-            //    GameManager.Instance.TotalPrice += price;
-            //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-            //}
-            //else
-            //{
-            //    GameManager.Instance.TotalPrice += item.NodeItem.Price;
-            //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-            //}
         }
         catch
         {
@@ -107,24 +85,13 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
             item.Quantity++;
             item.gameObject.SetActive(true);
             GameManager.Instance.ShopingCartList.Add(item);
-            //if (NodeItem.Discount != 0)
-            //{
-            //    float price = NodeItem.Price - (NodeItem.Discount / 100 * NodeItem.Price);
-            //    GameManager.Instance.TotalPrice += price;
-            //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-            //}
-            //else
-            //{
-            //    GameManager.Instance.TotalPrice += item.NodeItem.Price;
-            //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-            //}
         }
     }
 
     private void SelectItem()
     {
         GameManager.Instance.ItemsManagerComponent.SelectedItem = this;
-        GameManager.Instance.ItemsManagerComponent.EditItemName.text = NodeItem.ItemName;
+        GameManager.Instance.ItemsManagerComponent.EditItemName.text = NodeItem.Name;
         GameManager.Instance.ItemsManagerComponent.EditItemPrice.text = NodeItem.Price.ToString();
         GameManager.Instance.ItemsManagerComponent.EditItemStock.text = NodeItem.Stock.ToString();
         GameManager.Instance.ItemsManagerComponent.EditItemDiscount.text = NodeItem.Discount.ToString();

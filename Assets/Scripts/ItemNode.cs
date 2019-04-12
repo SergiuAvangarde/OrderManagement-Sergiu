@@ -4,31 +4,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class ItemNode
+public class ItemNode : NodeKey
 {
-    public ItemNode Left;
-    public ItemNode Right;
-    public string ItemName;
     public float Price;
     public int Stock;
     public float Discount;
 
-    public ItemNode()
-    {
-    
-    }
+    //public ItemNode(string name) 
+    //{
+    //
+    //}
 
-    public ItemNode(string name, float price, int stock)
+    public ItemNode(string name, float price, int stock) : base(name)
     {
-        ItemName = name;
+        Name = name;
         Price = price;
         Stock = stock;
         Discount = 0;
     }
 
-    public ItemNode(string name, float price, int stock, float discount)
+    public ItemNode(string name, float price, int stock, float discount) : base(name)
     {
-        ItemName = name;
+        Name = name;
         Price = price;
         Stock = stock;
         Discount = discount;

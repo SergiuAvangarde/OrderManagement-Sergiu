@@ -26,7 +26,7 @@ public class CartItem : MonoBehaviour
     {
         if (AddedToCart)
         {
-            NameField.text = NodeItem.ItemName;
+            NameField.text = NodeItem.Name;
             QuantityField.text = "Quantity: " + Quantity.ToString();
             if (Discount != 0)
             {

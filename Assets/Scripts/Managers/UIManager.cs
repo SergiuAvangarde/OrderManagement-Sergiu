@@ -54,12 +54,15 @@ public class UIManager : MonoBehaviour
         ResetOrdersHistory();
         ShowOrdersHistory();
         GameManager.Instance.ShopingCartList.Clear();
+        editClientNameInput.text = ClientsSelection.options[ClientsSelection.value].text;
     }
 
     public void EditClient()
     {
         string CurrentName = ClientsSelection.options[ClientsSelection.value].text;
-        GameManager.Instance.OrdersTreeRoot.EditClient(GameManager.Instance.OrdersTreeRoot.RootTree.Left, CurrentName, editClientNameInput.text);
+        Node<OrderNode> editedNode = GameManager.Instance.OrdersTreeRoot.SearchTree(CurrentName);
+        editedNode.Key.Name = editClientNameInput.text;
+        GameManager.Instance.OrdersTreeRoot.EditNode(GameManager.Instance.OrdersTreeRoot.RootTree.Left, editedNode, CurrentName);
         Dropdown.OptionData newClient = new Dropdown.OptionData();
         newClient.text = editClientNameInput.text;
         ClientsSelection.options.Remove(ClientsSelection.options[ClientsSelection.value]);
@@ -84,7 +87,7 @@ public class UIManager : MonoBehaviour
 
     public void ShowOrdersHistory()
     {
-        List<CartItem> selectedClientOrders = GameManager.Instance.OrdersTreeRoot.SearchTree(ClientsSelection.options[ClientsSelection.value].text).OrderedItems;
+        List<CartItem> selectedClientOrders = GameManager.Instance.OrdersTreeRoot.SearchTree(ClientsSelection.options[ClientsSelection.value].text).Key.OrderedItems;
 
         foreach (var item in selectedClientOrders)
         {
@@ -163,19 +166,19 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void RefreshNodesList(ItemNode node)
+    public void RefreshNodesList(Node<ItemNode> node)
     {
         if (node != null)
         {
             if (Index <= UsedItemsList.Count - 1)
             {
-                UsedItemsList[Index].NodeItem = node;
+                UsedItemsList[Index].NodeItem = (ItemNode)(NodeKey)node.Key;
                 UsedItemsList[Index].OnEnable();
                 Index++;
             }
             else
             {
-                InitializeNode(node);
+                InitializeNode((ItemNode)(NodeKey)node.Key);
                 Index++;
             }
 
@@ -185,7 +188,7 @@ public class UIManager : MonoBehaviour
             }
             else if (node.Left != null && Index > UsedItemsList.Count - 1)
             {
-                InitializeNode(node);
+                InitializeNode((ItemNode)(NodeKey)node.Key);
                 RefreshNodesList(node.Left);
             }
 
@@ -195,18 +198,19 @@ public class UIManager : MonoBehaviour
             }
             else if (node.Right != null && Index > UsedItemsList.Count - 1)
             {
-                InitializeNode(node);
+                InitializeNode((ItemNode)(NodeKey)node.Key);
                 RefreshNodesList(node.Right);
             }
         }
     }
 
-    public void RefreshClientsDropdown(OrderNode node)
+    public void RefreshClientsDropdown(Node<OrderNode> node)
     {
         if (node != null)
         {
             Dropdown.OptionData newClient = new Dropdown.OptionData();
-            newClient.text = node.ClientName;
+            OrderNode nodeName = (OrderNode)(NodeKey)node.Key;
+            newClient.text = nodeName.Name;
             ClientsSelection.options.Add(newClient);
             ClientsSelection.value = 0;
 
@@ -227,7 +231,7 @@ public class UIManager : MonoBehaviour
         {
             foreach (var item in UsedItemsList)
             {
-                string itemName = item.NodeItem.ItemName.Trim().ToLower();
+                string itemName = item.NodeItem.Name.Trim().ToLower();
                 string searchName = searchInput.text.Trim().ToLower();
                 if (itemName.Contains(searchName))
                 {

@@ -3,26 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OrderNode
+public class OrderNode : NodeKey
 {
-    public OrderNode Left;
-    public OrderNode Right;
-    public string ClientName;
     public List<CartItem> OrderedItems = new List<CartItem>();
 
-    public OrderNode()
-    {
+   //public OrderNode()
+   //{
+   //
+   //}
 
+    public OrderNode(string name) : base(name)
+    {
+        Name = name;
     }
 
-    public OrderNode(string clientName)
+    public OrderNode(string name, List<CartItem> orderedItems) : base(name)
     {
-        ClientName = clientName;
-    }
-
-    public OrderNode(string name, List<CartItem> orderedItems)
-    {
-        ClientName = name;
+        Name = name;
         OrderedItems = orderedItems;
     }
 }

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OrdersBinaryTree
+public class BinaryTree<T> where T : NodeKey
 {
-    public OrderNode RootTree = new OrderNode("");
+    public Node<T> RootTree = new Node<T>(null,null,null);
 
-    public OrderNode AddToTree(OrderNode parentNode, OrderNode newNode)
+    public Node<T> AddToTree(Node<T> parentNode, Node<T> newNode)
     {
         if (parentNode == null)
         {
@@ -14,7 +14,7 @@ public class OrdersBinaryTree
         }
         else
         {
-            int value = newNode.ClientName.ToLower().CompareTo(parentNode.ClientName.ToLower());
+            int value = newNode.Key.Name.ToLower().CompareTo(parentNode.Key.Name.ToLower());
             if (value > 0)
             {
                 parentNode.Right = AddToTree(parentNode.Right, newNode);
@@ -25,7 +25,13 @@ public class OrdersBinaryTree
             }
             else
             {
-                GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_CLIENT_EXISTS);
+                GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_ITEM_EXISTS);
+                if (parentNode is ItemNode)
+                {
+                    ItemNode parent = (ItemNode)(NodeKey)parentNode.Key;
+                    ItemNode node = (ItemNode)(NodeKey)newNode.Key;
+                    parent.Stock += node.Stock;
+                }
             }
         }
         return parentNode;
@@ -33,13 +39,13 @@ public class OrdersBinaryTree
 
     public void RemoveFromTree(string nameToRemove)
     {
-        OrderNode parentNode = RootTree;
-        OrderNode currentNode = RootTree.Left;
-        OrderNode foundNode = null;
+        Node<T> parentNode = RootTree;
+        Node<T> currentNode = RootTree.Left;
+        Node<T> foundNode = null;
 
         while (currentNode != null)
         {
-            int value = nameToRemove.ToLower().CompareTo(currentNode.ClientName.ToLower());
+            int value = nameToRemove.ToLower().CompareTo(currentNode.Key.Name.ToLower());
             if (value == 0)
             {
                 foundNode = currentNode;
@@ -106,7 +112,7 @@ public class OrdersBinaryTree
             else if (foundNode.Left != null && foundNode.Right != null)
             {
                 // Removing node with two children
-                OrderNode replaceingNode;
+                Node<T> replaceingNode;
                 if (deleteRight)
                 {
                     replaceingNode = LowestValueRight(foundNode.Right);
@@ -129,23 +135,25 @@ public class OrdersBinaryTree
         }
     }
 
-    public void AddToOrder(OrderNode parentNode, string searchName, CartItem order)
+    public void EditNode(Node<T> parentNode, Node<T> editNode, string searchName)
     {
         if (parentNode != null)
         {
-            if (parentNode.ClientName.ToLower() == searchName.ToLower())
+            if (parentNode.Key.Name.ToLower() == searchName.ToLower())
             {
-                parentNode.ClientName = searchName;
-                parentNode.OrderedItems.Add(order);
+                editNode.Right = parentNode.Right;
+                editNode.Left = parentNode.Left;
+                parentNode = editNode;
+                return;
             }
             else
             {
-                int value = searchName.ToLower().CompareTo(parentNode.ClientName.ToLower());
+                int value = searchName.ToLower().CompareTo(parentNode.Key.Name.ToLower());
                 if (value > 0)
                 {
                     if (parentNode.Right != null)
                     {
-                        AddToOrder(parentNode.Right, searchName, order);
+                        EditNode(parentNode.Right, editNode, searchName);
                     }
                     else
                     {
@@ -156,7 +164,7 @@ public class OrdersBinaryTree
                 {
                     if (parentNode.Left != null)
                     {
-                        AddToOrder(parentNode.Left, searchName, order);
+                        EditNode(parentNode.Left, editNode, searchName);
                     }
                     else
                     {
@@ -171,54 +179,13 @@ public class OrdersBinaryTree
         }
     }
 
-    public void EditClient(OrderNode parentNode, string searchName, string clientName)
+    public Node<T> SearchTree(string searchName)
     {
-        if (parentNode != null)
-        {
-            if (parentNode.ClientName.ToLower() == searchName.ToLower())
-            {
-                parentNode.ClientName = clientName;
-            }
-            else
-            {
-                int value = searchName.ToLower().CompareTo(parentNode.ClientName.ToLower());
-                if (value > 0)
-                {
-                    if (parentNode.Right != null)
-                    {
-                        EditClient(parentNode.Right, searchName, clientName);
-                    }
-                    else
-                    {
-                        GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
-                    }
-                }
-                else
-                {
-                    if (parentNode.Left != null)
-                    {
-                        EditClient(parentNode.Left, searchName, clientName);
-                    }
-                    else
-                    {
-                        GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
-                    }
-                }
-            }
-        }
-        else
-        {
-            GameManager.Instance.UIManagerComponent.PrintErrorMessage(Constants.ERROR_INVALID_NODE);
-        }
-    }
-
-    public OrderNode SearchTree(string searchName)
-    {
-        OrderNode parentNode = RootTree.Left;
+        Node<T> parentNode = RootTree.Left;
 
         while (parentNode != null)
         {
-            int value = searchName.Trim().ToLower().CompareTo(parentNode.ClientName.Trim().ToLower());
+            int value = searchName.ToLower().CompareTo(parentNode.Key.Name.ToLower());
 
             if (value == 0)
             {
@@ -236,15 +203,15 @@ public class OrdersBinaryTree
         return null;
     }
 
-    public OrderNode LowestValueRight(OrderNode subTree)
+    public Node<T> LowestValueRight(Node<T> subTree)
     {
         if (subTree == null)
         {
             Debug.Log("Tried to search for\"null\" in tree");
             return null;
         }
-        OrderNode lowestValue = subTree;
-        OrderNode parent = null;
+        Node<T> lowestValue = subTree;
+        Node<T> parent = null;
 
         while (lowestValue.Left != null)
         {
@@ -264,15 +231,15 @@ public class OrdersBinaryTree
         return lowestValue;
     }
 
-    public OrderNode HighestValueLeft(OrderNode subTree)
+    public Node<T> HighestValueLeft(Node<T> subTree)
     {
         if (subTree == null)
         {
             Debug.Log("Tried to search for\"null\" in tree");
             return null;
         }
-        OrderNode highestValue = subTree;
-        OrderNode parent = null;
+        Node<T> highestValue = subTree;
+        Node<T> parent = null;
 
         while (highestValue.Right != null)
         {
@@ -292,23 +259,23 @@ public class OrdersBinaryTree
         return highestValue;
     }
 
-    private OrderNode GetParent(OrderNode child)
+    private Node<T> GetParent(Node<T> child)
     {
-        OrderNode curr = RootTree;
-        OrderNode next = RootTree.Left;
+        Node<T> curr = RootTree;
+        Node<T> next = RootTree.Left;
         if (RootTree.Left == null)
         {
             return null;
         }
 
-        while (next.ClientName.ToLower().CompareTo(child.ClientName.ToLower()) != 0)
+        while (next.Key.CompareTo(child.Key) != 0)
         {
             curr = next;
-            if (next.ClientName.ToLower().CompareTo(child.ClientName.ToLower()) > 0)
+            if (next.Key.CompareTo(child.Key) > 0)
             {
                 next = next.Left;
             }
-            else if (next.ClientName.ToLower().CompareTo(child.ClientName.ToLower()) < 0)
+            else if (next.Key.CompareTo(child.Key) < 0)
             {
                 next = next.Right;
             }

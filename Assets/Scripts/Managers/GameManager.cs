@@ -20,8 +20,8 @@ public class GameManager : MonoBehaviour
     public double TotalPrice { get; set; }
     public double OrdersTotalPrice { get; set; }
 
-    public ItemsBinaryTree ItemsTreeRoot = new ItemsBinaryTree();
-    public OrdersBinaryTree OrdersTreeRoot = new OrdersBinaryTree();
+    public BinaryTree<ItemNode> ItemsTreeRoot = new BinaryTree<ItemNode>();
+    public BinaryTree<OrderNode> OrdersTreeRoot = new BinaryTree<OrderNode>();
 
     private int poolSize = 10;
 
