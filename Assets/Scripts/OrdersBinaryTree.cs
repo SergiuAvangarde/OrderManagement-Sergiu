@@ -171,14 +171,13 @@ public class OrdersBinaryTree
         }
     }
 
-    public void EditNode(OrderNode parentNode, string searchName, string clientName, List<CartItem> orders)
+    public void EditClient(OrderNode parentNode, string searchName, string clientName)
     {
         if (parentNode != null)
         {
             if (parentNode.ClientName.ToLower() == searchName.ToLower())
             {
                 parentNode.ClientName = clientName;
-                parentNode.OrderedItems = orders;
             }
             else
             {
@@ -187,7 +186,7 @@ public class OrdersBinaryTree
                 {
                     if (parentNode.Right != null)
                     {
-                        EditNode(parentNode.Right, searchName, clientName, orders);
+                        EditClient(parentNode.Right, searchName, clientName);
                     }
                     else
                     {
@@ -198,7 +197,7 @@ public class OrdersBinaryTree
                 {
                     if (parentNode.Left != null)
                     {
-                        EditNode(parentNode.Left, searchName, clientName, orders);
+                        EditClient(parentNode.Left, searchName, clientName);
                     }
                     else
                     {
@@ -215,11 +214,11 @@ public class OrdersBinaryTree
 
     public OrderNode SearchTree(string searchName)
     {
-        OrderNode parentNode = RootTree;
+        OrderNode parentNode = RootTree.Left;
 
         while (parentNode != null)
         {
-            int value = searchName.ToLower().CompareTo(parentNode.ClientName.ToLower());
+            int value = searchName.Trim().ToLower().CompareTo(parentNode.ClientName.Trim().ToLower());
 
             if (value == 0)
             {

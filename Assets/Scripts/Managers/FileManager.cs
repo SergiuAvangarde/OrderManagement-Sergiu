@@ -58,7 +58,7 @@ public class FileManager : MonoBehaviour
         }
         else
         {
-            GameManager.Instance.UIManagerComponent.PrintErrorMessage("the .csv file does not exist");
+            GameManager.Instance.UIManagerComponent.PrintErrorMessage("the BinaryTreeData.csv file does not exist");
         }
     }
 
@@ -88,7 +88,7 @@ public class FileManager : MonoBehaviour
             {
                 foreach (var order in node.OrderedItems)
                 {
-                    orders += '&' + order.NodeItem.ItemName + ';' + order.Price + ';' + order.Quantity;
+                    orders += '&' + order.NodeItem.ItemName + ';' + order.Price + ';' + order.Quantity + ';' + order.Discount;
                 }
             }
             string row = node.ClientName + ',' + orders + Environment.NewLine;
@@ -129,12 +129,16 @@ public class FileManager : MonoBehaviour
                     string[] Orders = OrdersString.Split('&');
                     foreach (var order in Orders)
                     {
-                        string[] orderInfo = order.Split(';');
-                        CartItem item = new CartItem();
-                        item.NodeItem = GameManager.Instance.ItemsTreeRoot.SearchTree(orderInfo[0]);
-                        item.Price = float.Parse(orderInfo[1]);
-                        item.Quantity = int.Parse(orderInfo[2]);
-                        OrderedItems.Add(item);
+                        if (!string.IsNullOrEmpty(order))
+                        {
+                            string[] orderInfo = order.Split(';');
+                            CartItem item = new CartItem();
+                            item.NodeItem = GameManager.Instance.ItemsTreeRoot.SearchTree(orderInfo[0]);
+                            item.Price = float.Parse(orderInfo[1]);
+                            item.Quantity = int.Parse(orderInfo[2]);
+                            item.Discount = int.Parse(orderInfo[3]);
+                            OrderedItems.Add(item);
+                        }
                     }
                 }
 
@@ -145,14 +149,13 @@ public class FileManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("should update the Client information from node");
                     continue;
                 }
             }
         }
         else
         {
-            GameManager.Instance.UIManagerComponent.PrintErrorMessage("the .csv file does not exist");
+            GameManager.Instance.UIManagerComponent.PrintErrorMessage("the ClientsData.csv file does not exist");
         }
     }
 }

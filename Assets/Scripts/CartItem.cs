@@ -8,6 +8,7 @@ public class CartItem : MonoBehaviour
 {
     public ItemNode NodeItem { get; set; }
     public float Price { get; set; }
+    public float Discount { get; set; }
     public int Quantity { get; set; } = 0;
 
     public bool AddedToCart = false;
@@ -27,20 +28,23 @@ public class CartItem : MonoBehaviour
         {
             NameField.text = NodeItem.ItemName;
             QuantityField.text = "Quantity: " + Quantity.ToString();
-            if (NodeItem.Discount != 0)
+            if (Discount != 0)
             {
                 OldPriceField.text = "Old price: " + NodeItem.Price.ToString() + "$";
-                Price = NodeItem.Price - (NodeItem.Discount / 100 * NodeItem.Price);
+                Price -= Discount / 100 * Price;
                 PriceField.text = "Price: " + Price + "$";
+                GameManager.Instance.TotalPrice += Price * Quantity;
+                GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
                 OldPriceField.gameObject.SetActive(true);
             }
             else
             {
                 OldPriceField.gameObject.SetActive(false);
-                Price = NodeItem.Price;
                 PriceField.text = "Price: " + Price + "$";
+                GameManager.Instance.TotalPrice += Price * Quantity;
+                GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
             }
-            GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+
         }
     }
 

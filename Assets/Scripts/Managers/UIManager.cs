@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
 {
     public Queue<InventoryItem> ItemsQueue = new Queue<InventoryItem>();
     public List<InventoryItem> UsedItemsList = new List<InventoryItem>();
+    public List<CartItem> UsedOrderList = new List<CartItem>();
     public int Index { get; set; } = 0;
     public Dropdown ClientsSelection;
 
@@ -19,7 +20,11 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Transform itemsParent;
     [SerializeField]
+    private InputField editClientNameInput;
+    [SerializeField]
     private Text totalPriceField;
+    [SerializeField]
+    private Text ordersTotalPriceField;
     [SerializeField]
     private Text ErrorMessage;
     [SerializeField]
@@ -46,17 +51,88 @@ public class UIManager : MonoBehaviour
             item.AddedToCart = false;
             GameManager.Instance.ShopingCartPool.Enqueue(item);
         }
-
-        //should change the order history list here...
-
+        ResetOrdersHistory();
+        ShowOrdersHistory();
         GameManager.Instance.ShopingCartList.Clear();
+    }
+
+    public void EditClient()
+    {
+        string CurrentName = ClientsSelection.options[ClientsSelection.value].text;
+        GameManager.Instance.OrdersTreeRoot.EditClient(GameManager.Instance.OrdersTreeRoot.RootTree.Left, CurrentName, editClientNameInput.text);
+        Dropdown.OptionData newClient = new Dropdown.OptionData();
+        newClient.text = editClientNameInput.text;
+        ClientsSelection.options.Remove(ClientsSelection.options[ClientsSelection.value]);
+        ClientsSelection.options.Add(newClient);
+        GameManager.Instance.RefreshNodes();
+        editClientNameInput.text = "";
+    }
+
+    public void RemoveClient()
+    {
+        GameManager.Instance.OrdersTreeRoot.RemoveFromTree(ClientsSelection.options[ClientsSelection.value].text);
+        ClientsSelection.options.Remove(ClientsSelection.options[ClientsSelection.value]);
+        ClientsSelection.value = 0;
+    }
+
+    public void ResetPriceField()
+    {
         GameManager.Instance.TotalPrice = 0;
+        GameManager.Instance.OrdersTotalPrice = 0;
         GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+    }
+
+    public void ShowOrdersHistory()
+    {
+        List<CartItem> selectedClientOrders = GameManager.Instance.OrdersTreeRoot.SearchTree(ClientsSelection.options[ClientsSelection.value].text).OrderedItems;
+
+        foreach (var item in selectedClientOrders)
+        {
+            try
+            {
+                CartItem orderItem = GameManager.Instance.OrderHistoryPool.Dequeue();
+                orderItem.NodeItem = item.NodeItem;
+                orderItem.Price = item.Price;
+                orderItem.Quantity = item.Quantity;
+                orderItem.Discount = item.Discount;
+                GameManager.Instance.OrdersTotalPrice += item.Price * item.Quantity;
+                orderItem.AddedToCart = true;
+                orderItem.gameObject.SetActive(true);
+                UsedOrderList.Add(orderItem);
+            }
+            catch
+            {
+                GameObject orderItem = Instantiate(GameManager.Instance.OrderItem, GameManager.Instance.OrderHistoryContents);
+                CartItem cartComponent = orderItem.GetComponent<CartItem>();
+                GameManager.Instance.OrderHistoryPool.Enqueue(cartComponent);
+                CartItem cartItem = GameManager.Instance.OrderHistoryPool.Dequeue();
+                cartItem.NodeItem = item.NodeItem;
+                cartItem.Price = item.Price;
+                cartItem.Quantity = item.Quantity;
+                cartItem.Discount = item.Discount;
+                GameManager.Instance.OrdersTotalPrice += item.Price * item.Quantity;
+                cartItem.AddedToCart = true;
+                cartItem.gameObject.SetActive(true);
+                UsedOrderList.Add(cartItem);
+            }
+        }
+        CalculateTotalPrice();
+    }
+
+    public void ResetOrdersHistory()
+    {
+        foreach (var item in UsedOrderList)
+        {
+            item.AddedToCart = false;
+            item.gameObject.SetActive(false);
+            GameManager.Instance.OrderHistoryPool.Enqueue(item);
+        }
     }
 
     public void CalculateTotalPrice()
     {
         totalPriceField.text = "Total: " + string.Format("{0:0.00}", GameManager.Instance.TotalPrice) + "$";
+        ordersTotalPriceField.text = "Total: " + string.Format("{0:0.00}", GameManager.Instance.OrdersTotalPrice) + "$";
     }
 
     public void PrintErrorMessage(string message)
@@ -64,10 +140,6 @@ public class UIManager : MonoBehaviour
         ErrorMessage.text = message;
     }
 
-    public void ShowOrdersHistory()
-    {
-
-    }
 
     public void InitializeNode(ItemNode node)
     {
@@ -174,11 +246,6 @@ public class UIManager : MonoBehaviour
                 item.gameObject.SetActive(true);
             }
         }
-    }
-
-    public void ShowOrders()
-    {
-
     }
 
     /// <summary>

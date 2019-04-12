@@ -130,7 +130,7 @@ public class ItemsBinaryTree
         }
     }
 
-    public void EditNode(ItemNode parentNode, string searchName, string name, float price, int stock, float discount)
+    public void EditItem(ItemNode parentNode, string searchName, string name, float price, int stock, float discount)
     {
         if (parentNode != null)
         {
@@ -148,7 +148,7 @@ public class ItemsBinaryTree
                 {
                     if (parentNode.Right != null)
                     {
-                        EditNode(parentNode.Right, searchName, name, price, stock, discount);
+                        EditItem(parentNode.Right, searchName, name, price, stock, discount);
                     }
                     else
                     {
@@ -159,7 +159,7 @@ public class ItemsBinaryTree
                 {
                     if (parentNode.Left != null)
                     {
-                        EditNode(parentNode.Left, searchName, name, price, stock, discount);
+                        EditItem(parentNode.Left, searchName, name, price, stock, discount);
                     }
                     else
                     {
@@ -176,7 +176,7 @@ public class ItemsBinaryTree
 
     public ItemNode SearchTree(string searchName)
     {
-        ItemNode parentNode = RootTree;
+        ItemNode parentNode = RootTree.Left;
 
         while (parentNode != null)
         {

@@ -46,24 +46,24 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
 
     public void AddToCart()
     {
-        foreach (var item in GameManager.Instance.ShopingCartList)
+        foreach (CartItem item in GameManager.Instance.ShopingCartList)
         {
             if (item.NodeItem.ItemName.ToLower().Trim() == NodeItem.ItemName.ToLower().Trim())
             {
                 if (item.NodeItem.Stock > item.Quantity)
                 {
                     item.Quantity++;
-                    if (NodeItem.Discount != 0)
-                    {
-                        float price = NodeItem.Price - (NodeItem.Discount / 100 * NodeItem.Price);
-                        GameManager.Instance.TotalPrice += price;
-                        GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-                    }
-                    else
-                    {
-                        GameManager.Instance.TotalPrice += item.NodeItem.Price;
-                        GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-                    }
+                    //if (NodeItem.Discount != 0)
+                    //{
+                    //    float price = NodeItem.Price - (NodeItem.Discount / 100 * NodeItem.Price);
+                    //    GameManager.Instance.TotalPrice += price;
+                    //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+                    //}
+                    //else
+                    //{
+                    //    GameManager.Instance.TotalPrice += item.NodeItem.Price;
+                    //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+                    //}
                 }
                 else
                 {
@@ -77,20 +77,22 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
             CartItem item = GameManager.Instance.ShopingCartPool.Dequeue();
             item.AddedToCart = true;
             item.NodeItem = NodeItem;
+            item.Price = NodeItem.Price;
+            item.Discount = NodeItem.Discount;
             item.Quantity++;
             item.gameObject.SetActive(true);
             GameManager.Instance.ShopingCartList.Add(item);
-            if (NodeItem.Discount != 0)
-            {
-                float price = NodeItem.Price - (NodeItem.Discount / 100 * NodeItem.Price);
-                GameManager.Instance.TotalPrice += price;
-                GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-            }
-            else
-            {
-                GameManager.Instance.TotalPrice += item.NodeItem.Price;
-                GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-            }
+            //if (NodeItem.Discount != 0)
+            //{
+            //    float price = NodeItem.Price - (NodeItem.Discount / 100 * NodeItem.Price);
+            //    GameManager.Instance.TotalPrice += price;
+            //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+            //}
+            //else
+            //{
+            //    GameManager.Instance.TotalPrice += item.NodeItem.Price;
+            //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+            //}
         }
         catch
         {
@@ -100,20 +102,22 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
             CartItem item = GameManager.Instance.ShopingCartPool.Dequeue();
             item.AddedToCart = true;
             item.NodeItem = NodeItem;
+            item.Price = NodeItem.Price;
+            item.Discount = NodeItem.Discount;
             item.Quantity++;
             item.gameObject.SetActive(true);
             GameManager.Instance.ShopingCartList.Add(item);
-            if (NodeItem.Discount != 0)
-            {
-                float price = NodeItem.Price - (NodeItem.Discount / 100 * NodeItem.Price);
-                GameManager.Instance.TotalPrice += price;
-                GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-            }
-            else
-            {
-                GameManager.Instance.TotalPrice += item.NodeItem.Price;
-                GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-            }
+            //if (NodeItem.Discount != 0)
+            //{
+            //    float price = NodeItem.Price - (NodeItem.Discount / 100 * NodeItem.Price);
+            //    GameManager.Instance.TotalPrice += price;
+            //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+            //}
+            //else
+            //{
+            //    GameManager.Instance.TotalPrice += item.NodeItem.Price;
+            //    GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
+            //}
         }
     }
 
