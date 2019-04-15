@@ -10,6 +10,10 @@ public class FileManager : MonoBehaviour
     private static readonly string itemsTreeFile = "BinaryTreeData.csv";
     private static readonly string clientsTreeFile = "ClientsData.csv";
 
+    /// <summary>
+    /// Save item information from the binary tree to an .csv file
+    /// </summary>
+    /// <param name="root of the tree"></param>
     public static void SaveItemsToFile(Node<ItemNode> node)
     {
         if (node != null)
@@ -30,6 +34,9 @@ public class FileManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// load the information of the items from the .csv files to the binary tree
+    /// </summary>
     public static void LoadItemsFromFile()
     {
         string filePath = Path.Combine(Application.persistentDataPath, itemsTreeFile);
@@ -59,10 +66,15 @@ public class FileManager : MonoBehaviour
         }
         else
         {
-            GameManager.Instance.UIManagerComponent.PrintErrorMessage("the BinaryTreeData.csv file does not exist");
+            var textFile = Resources.Load<TextAsset>("BinaryTreeData");
+            File.AppendAllText(filePath, textFile.ToString());
+            LoadItemsFromFile();
         }
     }
 
+    /// <summary>
+    /// delete all of the .csv files containing information about the binary tree or the clients
+    /// </summary>
     public static void DeleteTreeFiles()
     {
         string ItemsPath = Path.Combine(Application.persistentDataPath, itemsTreeFile);
@@ -79,6 +91,10 @@ public class FileManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// save the binary tree cointaining information about the Clients and the orders to a .csv file
+    /// </summary>
+    /// <param name="root of the tree"></param>
     public static void SaveClients(Node<OrderNode> node)
     {
         if (node != null)
@@ -107,6 +123,9 @@ public class FileManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// load the client information from the .csv file
+    /// </summary>
     public static void LoadClients()
     {
         string filePath = Path.Combine(Application.persistentDataPath, clientsTreeFile);
@@ -157,7 +176,9 @@ public class FileManager : MonoBehaviour
         }
         else
         {
-            GameManager.Instance.UIManagerComponent.PrintErrorMessage("the ClientsData.csv file does not exist");
+            var textFile = Resources.Load<TextAsset>("ClientsData");
+            File.AppendAllText(filePath, textFile.ToString());
+            LoadClients();
         }
     }
 }

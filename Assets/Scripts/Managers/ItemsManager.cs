@@ -22,6 +22,9 @@ public class ItemsManager : MonoBehaviour
     [SerializeField]
     private InputField addItemDiscount;
 
+    /// <summary>
+    /// add the client from the input fields to the binary tree
+    /// </summary>
     public void AddClients()
     {
         OrderNode client = new OrderNode(clientNameInput.text);
@@ -35,6 +38,9 @@ public class ItemsManager : MonoBehaviour
         clientNameInput.text = "";
     }
 
+    /// <summary>
+    /// add a new item to the binary tree
+    /// </summary>
     public void AddItems()
     {
         ItemNode nodeItem = new ItemNode(addItemName.text, float.Parse(addItemPrice.text), int.Parse(addItemStock.text), float.Parse(addItemDiscount.text));
@@ -47,6 +53,9 @@ public class ItemsManager : MonoBehaviour
         addItemDiscount.text = "";
     }
 
+    /// <summary>
+    /// edit the item information from the binary tree, copy the current node, edit the information then replace the node with the new one
+    /// </summary>
     public void EditItem()
     {
         //GameManager.Instance.ItemsTreeRoot.EditItem(GameManager.Instance.ItemsTreeRoot.RootTree.Left, SelectedItem.NodeItem.Key, EditItemName.text, float.Parse(EditItemPrice.text), int.Parse(EditItemStock.text), float.Parse(EditItemDiscount.text));
@@ -63,6 +72,9 @@ public class ItemsManager : MonoBehaviour
         EditItemDiscount.text = "";
     }
 
+    /// <summary>
+    /// remoave an item from from the list, and from the binary tree
+    /// </summary>
     public void OnRemovePress()
     {
         GameManager.Instance.ItemsTreeRoot.RemoveFromTree(SelectedItem.NodeItem.Name);
@@ -72,6 +84,9 @@ public class ItemsManager : MonoBehaviour
         GameManager.Instance.RefreshNodes();
     }
 
+    /// <summary>
+    /// send the order to the order history
+    /// </summary>
     public void SendOrder()
     {
         string name = GameManager.Instance.UIManagerComponent.ClientsSelection.options[GameManager.Instance.UIManagerComponent.ClientsSelection.value].text;

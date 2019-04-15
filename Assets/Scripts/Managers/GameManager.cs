@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public UIManager UIManagerComponent;
     public ItemsManager ItemsManagerComponent;
 
+    public BinaryTree<ItemNode> ItemsTreeRoot = new BinaryTree<ItemNode>();
+    public BinaryTree<OrderNode> OrdersTreeRoot = new BinaryTree<OrderNode>();
     public List<CartItem> ShopingCartList = new List<CartItem>();
     public Queue<CartItem> ShopingCartPool = new Queue<CartItem>();
     public Queue<CartItem> OrderHistoryPool = new Queue<CartItem>();
@@ -20,11 +22,11 @@ public class GameManager : MonoBehaviour
     public double TotalPrice { get; set; }
     public double OrdersTotalPrice { get; set; }
 
-    public BinaryTree<ItemNode> ItemsTreeRoot = new BinaryTree<ItemNode>();
-    public BinaryTree<OrderNode> OrdersTreeRoot = new BinaryTree<OrderNode>();
+    private int poolSize = 20;
 
-    private int poolSize = 10;
-
+    /// <summary>
+    /// load the informations from the .csv files, and refresh the UI to show the new information loaded
+    /// </summary>
     private void Awake()
     {
         if (Instance == null)
@@ -45,6 +47,9 @@ public class GameManager : MonoBehaviour
         UIManagerComponent.RefreshClientsDropdown(OrdersTreeRoot.RootTree.Left);
     }
 
+    /// <summary>
+    /// initialize the object pool of Cart items for the shopping cart and order history
+    /// </summary>
     private void Start()
     {
         for (int i = 0; i <= poolSize; i++)
@@ -58,6 +63,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// reload all of the items from the list and the clients
+    /// </summary>
     public void RefreshNodes()
     {
         UIManagerComponent.Index = 0;
@@ -68,6 +76,9 @@ public class GameManager : MonoBehaviour
         UIManagerComponent.CalculateTotalPrice();
     }
 
+    /// <summary>
+    /// when the aplication closes, the information of the binary trees is saved to the .csv files
+    /// </summary>
     private void OnApplicationQuit()
     {
         FileManager.DeleteTreeFiles();

@@ -3,14 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Order type node, it holds the information for a list of ordered items
+/// </summary>
 public class OrderNode : NodeKey
 {
     public List<CartItem> OrderedItems = new List<CartItem>();
-
-   //public OrderNode()
-   //{
-   //
-   //}
 
     public OrderNode(string name) : base(name)
     {

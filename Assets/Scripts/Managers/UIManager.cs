@@ -32,6 +32,9 @@ public class UIManager : MonoBehaviour
 
     private int PooledItemsNmber = 20;
 
+    /// <summary>
+    /// initialize the object pool for the inventory items list
+    /// </summary>
     private void Start()
     {
         for (int i = 0; i <= PooledItemsNmber; i++)
@@ -43,6 +46,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// refresh the shopping cart information and order history
+    /// </summary>
     public void SelectClient()
     {
         foreach (CartItem item in GameManager.Instance.ShopingCartList)
@@ -57,6 +63,9 @@ public class UIManager : MonoBehaviour
         editClientNameInput.text = ClientsSelection.options[ClientsSelection.value].text;
     }
 
+    /// <summary>
+    /// edit a client name from the binary tree
+    /// </summary>
     public void EditClient()
     {
         string CurrentName = ClientsSelection.options[ClientsSelection.value].text;
@@ -71,6 +80,9 @@ public class UIManager : MonoBehaviour
         editClientNameInput.text = "";
     }
 
+    /// <summary>
+    /// delete a client entirelly
+    /// </summary>
     public void RemoveClient()
     {
         GameManager.Instance.OrdersTreeRoot.RemoveFromTree(ClientsSelection.options[ClientsSelection.value].text);
@@ -78,6 +90,9 @@ public class UIManager : MonoBehaviour
         ClientsSelection.value = 0;
     }
 
+    /// <summary>
+    /// reset the total price field from the shopping cart to 0 when the lists are empty
+    /// </summary>
     public void ResetPriceField()
     {
         GameManager.Instance.TotalPrice = 0;
@@ -85,6 +100,9 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
     }
 
+    /// <summary>
+    /// on the orders history panel, populate the objects from the pool with information about past orders
+    /// </summary>
     public void ShowOrdersHistory()
     {
         List<CartItem> selectedClientOrders = GameManager.Instance.OrdersTreeRoot.SearchTree(ClientsSelection.options[ClientsSelection.value].text).Key.OrderedItems;
@@ -122,6 +140,9 @@ public class UIManager : MonoBehaviour
         CalculateTotalPrice();
     }
 
+    /// <summary>
+    /// reset the order history items, and put them back in the queue for the pool
+    /// </summary>
     public void ResetOrdersHistory()
     {
         foreach (var item in UsedOrderList)
@@ -132,18 +153,28 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// set the total price of the items in the shopping cart and orders history to the coresponding UI panel
+    /// </summary>
     public void CalculateTotalPrice()
     {
         totalPriceField.text = "Total: " + string.Format("{0:0.00}", GameManager.Instance.TotalPrice) + "$";
         ordersTotalPriceField.text = "Total: " + string.Format("{0:0.00}", GameManager.Instance.OrdersTotalPrice) + "$";
     }
 
+    /// <summary>
+    /// function to print an error message to the UI
+    /// </summary>
+    /// <param name="message"></param>
     public void PrintErrorMessage(string message)
     {
         ErrorMessage.text = message;
     }
 
-
+    /// <summary>
+    /// populate an inventory item from the pool with information from a node, if the pool is empty instantiate a new item.
+    /// </summary>
+    /// <param name="node"></param>
     public void InitializeNode(ItemNode node)
     {
         try
@@ -166,6 +197,10 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// refresh the informations of the invenroty items from the list
+    /// </summary>
+    /// <param name="node"></param>
     public void RefreshNodesList(Node<ItemNode> node)
     {
         if (node != null)
@@ -204,6 +239,10 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// refresh the information about the clients from the dropdown menu
+    /// </summary>
+    /// <param name="node"></param>
     public void RefreshClientsDropdown(Node<OrderNode> node)
     {
         if (node != null)
@@ -225,6 +264,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function for searching of a speciffic item in the list to add to the cart
+    /// </summary>
     public void SearchItems()
     {
         if (!string.IsNullOrEmpty(searchInput.text))
@@ -253,7 +295,7 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Open options panel; set position to mouse coordinates
+    /// Open options panel; set position to mouse click position
     /// </summary>
     /// <param name="elem"></param>
     public void OpenOptionsPanel()

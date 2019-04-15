@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// key type value for binary tree nodes, this value is necessary to compare nodes betwen them
+/// </summary>
 public class NodeKey : IComparable<NodeKey>, IEqualityComparer<NodeKey>
 {
     public string Name;

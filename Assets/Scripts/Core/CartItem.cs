@@ -10,37 +10,39 @@ public class CartItem : MonoBehaviour
     public float Price { get; set; }
     public float Discount { get; set; }
     public int Quantity { get; set; } = 0;
+    public bool AddedToCart { get; set; } = false;
 
-    public bool AddedToCart = false;
+    [SerializeField]
+    private TextMeshProUGUI nameField;
+    [SerializeField]
+    private TextMeshProUGUI quantityField;
+    [SerializeField]
+    private TextMeshProUGUI priceField;
+    [SerializeField]
+    private TextMeshProUGUI oldPriceField;
 
-    [SerializeField]
-    private TextMeshProUGUI NameField;
-    [SerializeField]
-    private TextMeshProUGUI QuantityField;
-    [SerializeField]
-    private TextMeshProUGUI PriceField;
-    [SerializeField]
-    private TextMeshProUGUI OldPriceField;
-
+    /// <summary>
+    /// when enabled, the object from the cart or the object from the Orders list, is refreshed with the coresponding information
+    /// </summary>
     private void OnEnable()
     {
         if (AddedToCart)
         {
-            NameField.text = NodeItem.Name;
-            QuantityField.text = "Quantity: " + Quantity.ToString();
+            nameField.text = NodeItem.Name;
+            quantityField.text = "Quantity: " + Quantity.ToString();
             if (Discount != 0)
             {
-                OldPriceField.text = "Old price: " + NodeItem.Price.ToString() + "$";
+                oldPriceField.text = "Old price: " + NodeItem.Price.ToString() + "$";
                 Price -= Discount / 100 * Price;
-                PriceField.text = "Price: " + Price + "$";
+                priceField.text = "Price: " + Price + "$";
                 GameManager.Instance.TotalPrice += Price * Quantity;
                 GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
-                OldPriceField.gameObject.SetActive(true);
+                oldPriceField.gameObject.SetActive(true);
             }
             else
             {
-                OldPriceField.gameObject.SetActive(false);
-                PriceField.text = "Price: " + Price + "$";
+                oldPriceField.gameObject.SetActive(false);
+                priceField.text = "Price: " + Price + "$";
                 GameManager.Instance.TotalPrice += Price * Quantity;
                 GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
             }
@@ -48,6 +50,11 @@ public class CartItem : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// this function adjusts the quantity of this item in the cart, also if the quantity reaches 0, the object is removed from the cart
+    /// </summary>
+    /// <param name="if true, increase, if false, decrease"></param>
     public void AdjustQuantity(bool adjustment)
     {
         if (adjustment)
@@ -55,7 +62,7 @@ public class CartItem : MonoBehaviour
             if (NodeItem.Stock > Quantity)
             {
                 Quantity++;
-                QuantityField.text = "Quantity: " + Quantity.ToString();
+                quantityField.text = "Quantity: " + Quantity.ToString();
                 GameManager.Instance.TotalPrice += Price;
                 GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
             }
@@ -67,7 +74,7 @@ public class CartItem : MonoBehaviour
         else
         {
             Quantity--;
-            QuantityField.text = "Quantity: " + Quantity.ToString();
+            quantityField.text = "Quantity: " + Quantity.ToString();
             GameManager.Instance.TotalPrice -= Price;
             GameManager.Instance.UIManagerComponent.CalculateTotalPrice();
             if (Quantity == 0)

@@ -6,6 +6,12 @@ public class BinaryTree<T> where T : NodeKey
 {
     public Node<T> RootTree = new Node<T>(null,null,null);
 
+    /// <summary>
+    /// recursive search in the binary tree to position a new node in the right place
+    /// </summary>
+    /// <param name="starting node for the function"></param>
+    /// <param name="the node that needs adding"></param>
+    /// <returns>the node in a certain position</returns>
     public Node<T> AddToTree(Node<T> parentNode, Node<T> newNode)
     {
         if (parentNode == null)
@@ -37,6 +43,10 @@ public class BinaryTree<T> where T : NodeKey
         return parentNode;
     }
 
+    /// <summary>
+    /// search the binary tree for a node and remove it
+    /// </summary>
+    /// <param name="the key name of the node to be removed"></param>
     public void RemoveFromTree(string nameToRemove)
     {
         Node<T> parentNode = RootTree;
@@ -135,6 +145,12 @@ public class BinaryTree<T> where T : NodeKey
         }
     }
 
+    /// <summary>
+    /// recursively search for a node, and replace it with a copy of that node with edited values
+    /// </summary>
+    /// <param name="the node where to start searching"></param>
+    /// <param name="the node to be replaced with"></param>
+    /// <param name="the name of the node you want to edit"></param>
     public void EditNode(Node<T> parentNode, Node<T> editNode, string searchName)
     {
         if (parentNode != null)
@@ -179,6 +195,11 @@ public class BinaryTree<T> where T : NodeKey
         }
     }
 
+    /// <summary>
+    /// using a while loop, search for a node by name
+    /// </summary>
+    /// <param name="searchNameof the node to search"></param>
+    /// <returns>the node you searched for</returns>
     public Node<T> SearchTree(string searchName)
     {
         Node<T> parentNode = RootTree.Left;
@@ -203,6 +224,11 @@ public class BinaryTree<T> where T : NodeKey
         return null;
     }
 
+    /// <summary>
+    /// I use this to find the lowest value of the right branch, or the closest value from the left to the parent node
+    /// </summary>
+    /// <param name="the right node of the branch"></param>
+    /// <returns>the node with the lowest value from the right or null if the funtion does not find it</returns>
     public Node<T> LowestValueRight(Node<T> subTree)
     {
         if (subTree == null)
@@ -231,6 +257,11 @@ public class BinaryTree<T> where T : NodeKey
         return lowestValue;
     }
 
+    /// <summary>
+    /// I use this to find the highest value of the left branch, or the closest value from the left to the parent node
+    /// </summary>
+    /// <param name="the right node of the branch"></param>
+    /// <returns>the node with the highest value from the left or null if the funtion does not find it</returns>s
     public Node<T> HighestValueLeft(Node<T> subTree)
     {
         if (subTree == null)
@@ -259,6 +290,11 @@ public class BinaryTree<T> where T : NodeKey
         return highestValue;
     }
 
+    /// <summary>
+    /// find the parent of a certain node
+    /// </summary>
+    /// <param name="the child node you want to find the parent"></param>
+    /// <returns></returns>
     private Node<T> GetParent(Node<T> child)
     {
         Node<T> curr = RootTree;

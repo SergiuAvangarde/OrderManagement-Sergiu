@@ -3,7 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Node<T> /*: IComparable<Node<T>> where T : NodeKey*/
+/// <summary>
+/// generic type node, it can be of type ItemNode or OrderNode
+/// it has the key value wich is neutral for both types of nodes
+/// </summary>
+/// <typeparam name="T"></typeparam>
+public class Node<T>
 {
     public Node<T> Left;
     public Node<T> Right;
@@ -20,12 +25,4 @@ public class Node<T> /*: IComparable<Node<T>> where T : NodeKey*/
         Right = right;
         Key = key;
     }
-
-    //public int CompareTo(Node<T> other)
-    //{
-    //    if (other == null)
-    //        Debug.LogError("[Node.cs] Tried to compare Node with null");
-    //
-    //    return Key.CompareTo(other.Key);
-    //}
 }

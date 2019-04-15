@@ -10,14 +10,13 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
     public ItemNode NodeItem { get; set; }
 
     [SerializeField]
-    private TextMeshProUGUI NameField;
+    private TextMeshProUGUI nameField;
     [SerializeField]
-    private TextMeshProUGUI StockField;
+    private TextMeshProUGUI stockField;
     [SerializeField]
-    private TextMeshProUGUI PriceField;
+    private TextMeshProUGUI priceField;
     [SerializeField]
-    private TextMeshProUGUI OldPriceField;
-
+    private TextMeshProUGUI oldPriceField;
 
     private Toggle toggleButton;
 
@@ -26,24 +25,32 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
         toggleButton = GetComponent<Toggle>();
     }
 
+    /// <summary>
+    /// Gameobject from Object Pool, when enabled, it sets new values for a different Item
+    /// </summary>
     public void OnEnable()
     {
-        NameField.text = NodeItem.Name;
-        StockField.text = "Stock: " + NodeItem.Stock.ToString();
+        nameField.text = NodeItem.Name;
+        stockField.text = "Stock: " + NodeItem.Stock.ToString();
         if (NodeItem.Discount != 0)
         {
             float price = NodeItem.Price - (NodeItem.Discount/100 * NodeItem.Price);
-            PriceField.text = "Price: " + price + "$";
-            OldPriceField.gameObject.SetActive(true);
-            OldPriceField.text = "Old price: " + NodeItem.Price.ToString() + "$";
+            priceField.text = "Price: " + price + "$";
+            oldPriceField.gameObject.SetActive(true);
+            oldPriceField.text = "Old price: " + NodeItem.Price.ToString() + "$";
         }
         else
         {
-            OldPriceField.gameObject.SetActive(false);
-            PriceField.text = "Price: " + NodeItem.Price.ToString() + "$";
+            oldPriceField.gameObject.SetActive(false);
+            priceField.text = "Price: " + NodeItem.Price.ToString() + "$";
         }
     }
 
+
+    /// <summary>
+    /// this function is called when pressing the cart button, tries to enable an object from pool or to instantiate a new one if necessary,
+    /// if the item is already in the cart, the quantity is increased
+    /// </summary>
     public void AddToCart()
     {
         foreach (CartItem item in GameManager.Instance.ShopingCartList)
@@ -88,6 +95,9 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    /// <summary>
+    /// when the toggle of one item is on, it's values are passed to manager script
+    /// </summary>
     private void SelectItem()
     {
         GameManager.Instance.ItemsManagerComponent.SelectedItem = this;
