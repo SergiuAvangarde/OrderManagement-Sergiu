@@ -1,8 +1,8 @@
 # OrderManagement - Sergiu
 
-This program can take a list of items and clients from a binary tree, and manage speciffic orders based on the items stock, you can easily make an item at a discounted price by right clicking it and pressing the edit button, see a list of past orders or check again if the current order has everything you need.
+This program can take a list of items and clients from a binary tree, and manage speciffic orders based on the items stock, you can easily make an item at a discounted price by right clicking it and pressing the edit button, or remove it by pressing the remove button. You could see a list of past orders or check if the current order has everything you need before sending it.
 
-##Features
+## Features
 
 -Adding items and clients to a list
 -you can search on a list of every item from the inventory, or you can use the manual search function
@@ -10,19 +10,20 @@ This program can take a list of items and clients from a binary tree, and manage
 -you can edit the name of a client
 -Add any of the items from the inventory to the order, if you add the same item twice it will update the quantity in the shopping cart, also you can adjust the quantity of every item from the shopping cart, if the quantity is 0 the item is removed from the shopping cart, also if the quantity exceeds the available stock the program prints an error message.
 -you can check the orders history of every client, or if you make another order for a client the order history is updated with the coresponding quantities
+-When you switch clients the Shopping cart is reseted.
 -the program uses binary trees for efficiency in searching for a speciffic object, also an object pool is used instead of instantiating and destroying the inventory UI elements.
 
-##Usage
+## Usage
 -with this program you can easily manage orders from any store, you can add all of your product and client information in the program and easily keep track of client orders, quantities and the remaining stock, you can edit an item information or make a sale with a discounted price.
 
-##Roadmap
+## Roadmap
 Future improvements to the program include:
 -an updated UI
 -more code optimizations
 -make the order history separated by orders not one per client with new items added when making another order
 -posibility to print the orders history to an .pdf file
 
-##License
+## License
 Copyright (c) 2019 Sergiu Pop
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
