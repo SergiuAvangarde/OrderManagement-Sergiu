@@ -2,6 +2,8 @@
 
 This program can take a list of items and clients from a binary tree, and manage speciffic orders based on the items stock, you can easily make an item at a discounted price by right clicking it and pressing the edit button, or remove it by pressing the remove button. You could see a list of past orders or check if the current order has everything you need before sending it.
 
+The App was made at FullHD resolution (1920x1080) I don't know if it will show the correct information at other resolutions as well.
+
 ## Features
 
 -Adding items and clients to a list
